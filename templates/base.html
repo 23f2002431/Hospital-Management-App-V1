@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+   /* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Navigation Bar */
+.nav_bar {
+    background-color: #0d6d3d;          /* Dark medical green */
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.nav-links a {
+    color: #e8f5e9;                     /* Light greenish white */
+    margin-left: 25px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #b2ffd6;                      /* Soft mint green */
+    text-decoration: underline;
+}
+
+/* Footer */
+.site-footer {
+    background-color: #0d6d3d;           /* Same medical green */
+    color: white;
+    text-align: center;
+    padding: 12px;
+    margin-top: 40px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    font-size: 14px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+}
+
+/* Optional: Smooth Background */
+body {
+    background: #f4fff7;                 /* Very light green background */
+    padding-bottom: 60px;               /* Space so content doesn't hide under footer */
+}
+
+</style>
+<body>
+    <nav class="nav_bar">
+        <div class="logo">Hospital Management System</div>
+        <div class="nav-links">
+            <a href="{{url_for('registration')}}">Registration</a>
+            <a href="{{url_for('login')}}">Login</a>
+            
+        </div> 
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+<footer class="site-footer">
+    <p>&copy; 2025 Hospital Management System.All Rights reserved.| </p>
+</footer>   
+
+</body>
+</html>

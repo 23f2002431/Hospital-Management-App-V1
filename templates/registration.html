@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Login Page{% endblock %}
+{% block title %}Sign Up Page{% endblock %}
 
 {% block content %}
 
 <style>
-    .login-container {
+    .signup-container {
         display: flex;
         justify-content: center;
         align-items: center;
         padding-top: 40px;
         padding-bottom: 40px;
         background: #e8f5e9;
-        min-height: 80vh;
+        min-height: 80vh;   /* enough height without disturbing header/footer */
     }
 
-    .login-box {
+    .signup-box {
         background: white;
         width: 360px;
         padding: 25px;
@@ -24,7 +24,7 @@
         border-top: 8px solid #0d6d3d;
     }
 
-    .login-box h2 {
+    .signup-box h2 {
         text-align: center;
         margin-bottom: 20px;
         color: #0d6d3d;
@@ -71,47 +71,49 @@
         background: #0c5c34;
     }
 
-    .signup-link {
+    .login-link {
         margin-top: 15px;
         text-align: center;
         font-size: 14px;
     }
 
-    .signup-link a {
+    .login-link a {
         color: #0d6d3d;
         text-decoration: none;
         font-weight: bold;
     }
 
-    .signup-link a:hover {
+    .login-link a:hover {
         text-decoration: underline;
     }
 </style>
-{% if error_message %}
-{error_message}
-{% endif %}
 
-<div class="login-container">
-    <div class="login-box">
-        <h2>Login</h2>
+<div class="signup-container">
+    <div class="signup-box">
+        <h2>Sign Up</h2>
 
-        <form action="/login" method="POST">
+        <form action="/registration" method="post">
 
             <div class="input-group">
                 <label>Full Name</label>
-                <input type="text" name="frontend_name" id="fullname" placeholder="Enter your full name" required>
+                <input type="text" name="username" id="fullname" placeholder="Enter your full name" required>
             </div>
 
-            <div class="input-group"> 
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter email" required>
+            </div> 
+
+            <div class="input-group">
                 <label>Password</label>
-                <input type="password" name="frontend_password" id="password" placeholder="Enter password" required>
+                <input type="password" name="password" id="password" placeholder="Enter password" required>
             </div>
 
-            <button class="submit-btn" type="submit">Login</button>
+            <button class="submit-btn" type="submit">Sign Up</button>
 
-            <div class="signup-link">
-                Don't have an account?
-                <a href="{{ url_for('registration') }}">Sign Up</a>
+            <div class="login-link">
+                Already have an account?
+                <a href="{{ url_for('login') }}">Login here</a>
             </div>
 
         </form>

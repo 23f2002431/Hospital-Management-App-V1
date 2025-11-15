@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Management – Home{% endblock %}
+
+{% block content %}
+
+<style>
+    .landing-section {
+        background: linear-gradient(rgba(0, 64, 32, 0.65), rgba(0, 64, 32, 0.65)),
+                    url('https://static.vecteezy.com/system/resources/thumbnails/070/638/150/small/doctor-interacting-with-digital-interface-healthcare-technology-concept-featuring-virtual-screen-data-analysis-and-modern-medicine-photo.jpeg') center/cover no-repeat;
+        height: 88vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        color: white;
+        text-align: center;
+        border-bottom: 6px solid #0d6d3d;
+    }
+
+    .landing-box {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 40px 50px;
+        border-radius: 12px;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        max-width: 650px;
+    }
+
+    .landing-box h1 {
+        font-size: 40px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .landing-box p {
+        font-size: 18px;
+        line-height: 1.5;
+        margin-bottom: 30px;
+    }
+
+    .btn-area a {
+        background: #0d6d3d;
+        padding: 12px 25px;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 18px;
+        margin: 0 10px;
+        transition: 0.3s;
+    }
+
+    .btn-area a:hover {
+        background: #0c5c34;
+    }
+</style>
+
+<div class="landing-section">
+    <div class="landing-box">
+        <h1>Welcome to Hospital Management System</h1>
+        <p>Efficient. Reliable. Patient-Centered.<br>
+           Manage hospital operations smoothly with digital registration, appointment handling, and medical record management.</p>
+
+        <div class="btn-area">
+            <a href="{{ url_for('registration') }}">Register Now</a>
+            <a href="{{ url_for('login') }}">Login</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
