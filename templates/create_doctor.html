@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Add Doctor{% endblock %}
+
+{% block content %}
+
+
+<!--for flash message -->
+<div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<style>
+.flash-container {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+</style>
+
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background: #e8f5e9;
+        min-height: 90vh;
+    }
+
+    .form-box {
+        background: white;
+        width: 380px;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        border-top: 8px solid #0d6d3d;
+    }
+
+    .form-box h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #0d6d3d;
+    }
+
+    .input-group {
+        margin-bottom: 18px;
+    }
+
+    .input-group label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #004d25;
+        font-weight: 600;
+    }
+
+    .input-group input,
+    .input-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #a5d6a7;
+        border-radius: 5px;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+        border-color: #0d6d3d;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #0d6d3d;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 5px;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #0c5c34;
+    }
+</style>
+
+
+<div class="form-container">
+    <div class="form-box">
+
+        <h2>Add Doctor</h2>
+
+        <form action="/admin_dashboard/create_doctor" method="POST">
+
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter doctor's name" required>
+            </div>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Enter doctor's email" required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Create password" required>
+            </div>
+
+            <div class="input-group">
+                <label>Department</label>
+                <select name="department_id" required>
+                    <option disabled selected>Select Department</option>
+
+                    {% for dept in departments %}
+                        <option value="{{ dept.id }}">{{ dept.department_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+    <label>Experience (in years)</label>
+    <input type="number" name="experience" placeholder="Enter experience in years" min="0" required>
+</div>
+
+<div class="input-group">
+    <label>Qualifications</label>
+    <input type="text" name="qualifications" placeholder="MBBS, MD, MS, etc." required>
+</div>
+
+
+            <button type="submit" class="submit-btn">Add Doctor</button>
+        </form>
+
+    </div>
+</div>
+
+
+
+{% endblock %}

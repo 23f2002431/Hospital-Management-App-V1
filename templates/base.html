@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{% block title %}Hospital Management System{% endblock %}</title>
 </head>
+
 <style>
-   /* Reset */
+/* Reset */
 * {
     margin: 0;
     padding: 0;
@@ -16,7 +17,7 @@
 
 /* Navigation Bar */
 .nav_bar {
-    background-color: #0d6d3d;          /* Dark medical green */
+    background-color: #0d6d3d;          
     color: white;
     padding: 15px 25px;
     display: flex;
@@ -32,7 +33,7 @@
 }
 
 .nav-links a {
-    color: #e8f5e9;                     /* Light greenish white */
+    color: #e8f5e9;
     margin-left: 25px;
     text-decoration: none;
     font-size: 16px;
@@ -41,13 +42,13 @@
 }
 
 .nav-links a:hover {
-    color: #b2ffd6;                      /* Soft mint green */
+    color: #b2ffd6; 
     text-decoration: underline;
 }
 
 /* Footer */
 .site-footer {
-    background-color: #0d6d3d;           /* Same medical green */
+    background-color: #0d6d3d;
     color: white;
     text-align: center;
     padding: 12px;
@@ -60,29 +61,34 @@
     box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
 }
 
-/* Optional: Smooth Background */
+/* Background */
 body {
-    background: #f4fff7;                 /* Very light green background */
-    padding-bottom: 60px;               /* Space so content doesn't hide under footer */
+    background: #f4fff7;       
+    padding-bottom: 60px;      
 }
-
 </style>
-<body>
-    <nav class="nav_bar">
-        <div class="logo">Hospital Management System</div>
-        <div class="nav-links">
-            <a href="{{url_for('registration')}}">Registration</a>
-            <a href="{{url_for('login')}}">Login</a>
-            
-        </div> 
-    </nav>
 
-    {% block content %}
-    {% endblock %}
+<body>
+
+<nav class="nav_bar">
+    <div class="logo">Hospital Management System</div>
+
+    <div class="nav-links">
+        {% if session.get('id') %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('registration') }}">Registration</a>
+            <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+    </div>
+</nav>
+
+{% block content %}
+{% endblock %}
 
 <footer class="site-footer">
-    <p>&copy; 2025 Hospital Management System.All Rights reserved.| </p>
-</footer>   
+    <p>&copy; 2025 Hospital Management System. All Rights Reserved.</p>
+</footer>
 
 </body>
 </html>

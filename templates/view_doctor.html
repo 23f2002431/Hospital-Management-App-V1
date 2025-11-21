@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}View Doctors{% endblock %}
+
+{% block content %}
+
+<style>
+    .page-container {
+        padding: 40px;
+        background: #e8f5e9;
+        min-height: 100vh;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 32px;
+        color: #0d6d3d;
+        margin-bottom: 25px;
+        font-weight: 700;
+    }
+
+    .doctor-card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 18px;
+        border-radius: 10px;
+        border-left: 6px solid #0d6d3d;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .doctor-info h3 {
+        margin: 0;
+        color: #0d6d3d;
+        font-size: 22px;
+    }
+
+    .doctor-info p {
+        margin: 3px 0;
+        font-size: 15px;
+        color: #004d25;
+    }
+
+    .action-buttons a {
+        padding: 8px 14px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        margin-left: 6px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .edit-btn {
+        background: #1976d2;
+        color: white;
+    }
+    .edit-btn:hover {
+        background: #115293;
+    }
+
+    .delete-btn {
+        background: #d32f2f;
+        color: white;
+    }
+    .delete-btn:hover {
+        background: #9a0007;
+    }
+
+    .disable-btn {
+        background: #f9a825;
+        color: #333;
+    }
+    .disable-btn:hover {
+        background: #c17900;
+    }
+
+    .activate-btn {
+        background: #2e7d32;
+        color: white;
+    }
+    .activate-btn:hover {
+        background: #1b5e20;
+    }
+
+</style>
+
+<div class="page-container">
+
+    <h1 class="page-title">Doctors List</h1>
+
+    {% for doc in doctors %}
+    <div class="doctor-card">
+
+        <div class="doctor-info">
+            <h3>{{ doc.username }}</h3>
+            <p>Email: {{ doc.email }}</p>
+            <p>Department: {{ doc.department.department_name }}</p>
+            <p>Status: 
+                {% if doc.is_active %}
+                    <strong style="color: green;">Active</strong>
+                {% else %}
+                    <strong style="color: red;">Inactive</strong>
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/edit_doctor/{{ doc.id }}" class="edit-btn">Edit</a>
+
+            <a href="{{ url_for('delete_doctor', doctor_id=doc.id) }}" class="delete-btn"
+               onclick="return confirm('Are you sure you want to delete this doctor?');">
+               Delete
+            </a>
+
+            {% if doc.is_active %}
+                <a href="/deactivate_doctor/{{ doc.id }}" class="disable-btn">Disable</a>
+            {% else %}
+                <a href="/activate_doctor/{{ doc.id }}" class="activate-btn">Activate</a>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

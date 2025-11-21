@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Doctor{% endblock %}
+
+{% block content %}
+
+<style>
+    .edit-container {
+        width: 60%;
+        margin: 30px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid #c8e6c9;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .edit-title {
+        font-size: 26px;
+        font-weight: bold;
+        color: #0d6d3d;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .edit-form label {
+        font-size: 15px;
+        font-weight: 600;
+        color: #0d6d3d;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .edit-form input,
+    .edit-form select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 18px;
+        border: 1px solid #b2dfdb;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+
+    .btn-submit {
+        background: #0d6d3d;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        width: 48%;
+        cursor: pointer;
+    }
+
+    .btn-submit:hover {
+        background: #0b5c33;
+    }
+
+    .btn-cancel {
+        background: #c62828;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        width: 48%;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-cancel:hover {
+        background: #a71f1f;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="edit-container">
+
+    <h2 class="edit-title">Edit Doctor Details</h2>
+
+    <form method="POST" class="edit-form">
+
+        <label>Username</label>
+        <input type="text" name="username" value="{{ doctor.username }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ doctor.email }}" required>
+
+        <label>Experience (years)</label>
+        <input type="number" name="experience" value="{{ doctor.experience }}">
+
+        <label>Qualifications</label>
+        <input type="text" name="qualifications" value="{{ doctor.qualifications }}">
+
+        <label>Department</label>
+        <select name="department_id" required>
+            <option value="">Select Department</option>
+            {% for dept in departments %}
+                <option value="{{ dept.id }}" 
+                    {% if doctor.department_id == dept.id %} selected {% endif %}>
+                    {{ dept.department_name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <div class="button-group">
+            <button class="btn-submit" type="submit">Save Changes</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-cancel">Cancel</a>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

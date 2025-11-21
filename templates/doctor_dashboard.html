@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+    .doctor-dashboard-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .welcome-box {
+        background: #0a660b;
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        font-size: 22px;
+        font-weight: 600;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .dashboard-section {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.10);
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .info-box {
+        padding: 15px;
+        border-radius: 10px;
+        background: #f5f7fa;
+        margin-bottom: 15px;
+        border-left: 5px solid #0d6efd;
+    }
+
+    .no-data {
+        padding: 15px;
+        color: #888;
+        font-style: italic;
+        background: #fafafa;
+        border-radius: 10px;
+        border: 1px dashed #ccc;
+    }
+
+    .availability-btn {
+        background: #198754;
+        padding: 12px 20px;
+        display: inline-block;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        margin-top: 10px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .availability-btn:hover {
+        background: #146c43;
+    }
+
+</style>
+
+<div class="doctor-dashboard-container">
+
+    <!-- WELCOME BOX -->
+    <div class="welcome-box">
+        Welcome, {{ doctor_name }}
+    </div>
+
+    <!-- UPCOMING APPOINTMENTS -->
+    <div class="dashboard-section">
+        <div class="section-title">Upcoming Appointments</div>
+
+        {% if upcoming_appointments and upcoming_appointments|length > 0 %}
+            {% for ap in upcoming_appointments %}
+                <div class="info-box">
+                    <strong>Patient:</strong> {{ ap.patient_name }} <br>
+                    <strong>Date:</strong> {{ ap.date }} <br>
+                    <strong>Time:</strong> {{ ap.time }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-data">No upcoming appointments.</div>
+        {% endif %}
+    </div>
+
+    <!-- ASSIGNED PATIENTS -->
+    <div class="dashboard-section">
+        <div class="section-title">Assigned Patients</div>
+
+        {% if assigned_patients and assigned_patients|length > 0 %}
+            {% for pt in assigned_patients %}
+                <div class="info-box">
+                    <strong>Name:</strong> {{ pt.name }} <br>
+                    <strong>Email:</strong> {{ pt.email }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-data">No assigned patients currently.</div>
+        {% endif %}
+    </div>
+
+    <!-- PROVIDE AVAILABILITY -->
+    <div class="dashboard-section">
+        <div class="section-title">Doctor Availability</div>
+
+        <p>You can update the days and timings you are available for appointments.</p>
+
+        <a href="{{url_for('doctor_availability')}}" class="availability-btn">
+            + Provide / Update Availability
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}
