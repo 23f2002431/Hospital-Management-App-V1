@@ -74,13 +74,31 @@ body {
     <div class="logo">Hospital Management System</div>
 
     <div class="nav-links">
-        {% if session.get('id') %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-            <a href="{{ url_for('registration') }}">Registration</a>
-            <a href="{{ url_for('login') }}">Login</a>
-        {% endif %}
-    </div>
+
+    {# If patient is logged in #}
+    {% if session.get('role') == 'patient' %}
+        <a href="{{ url_for('patient_dashboard') }}">Home</a>
+        <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+        <a href="{{ url_for('patient_history') }}">History</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+
+    {# Logged in as doctor #}
+    {% elif session.get('role') == 'doctor' %}
+        <a href="{{ url_for('doctor_dashboard') }}">Home</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+
+    {# Logged in as admin #}
+    {% elif session.get('role') == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}">Home</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+
+    {# When no one is logged in #}
+    {% else %}
+        <a href="{{ url_for('registration') }}">Register</a>
+        <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}
+</div>
+
 </nav>
 
 {% block content %}

@@ -1,1 +1,55 @@
-this is patient dashboard
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.dashboard-container {
+    text-align: center;
+    padding: 30px;
+}
+
+.dept-box {
+    width: 250px;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    display: inline-block;
+    margin: 15px;
+    border-top: 5px solid #0d6d3d;
+}
+
+.dept-box h3 {
+    color: #0d6d3d;
+    margin-bottom: 10px;
+}
+
+.view-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: #0d6d3d;
+    padding: 8px 15px;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.view-btn:hover {
+    background: #094e2b;
+}
+</style>
+
+<div class="dashboard-container">
+    <h2>Welcome, {{ patient_name }}</h2>
+    
+
+    {% for dept in departments %}
+    <div class="dept-box">
+        <h3>{{ dept.department_name }}</h3>
+        <a href="{{ url_for('see_department', dept_id=dept.id) }}" class="view-btn">View Details</a>
+
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

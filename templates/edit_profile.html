@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+<!--  edit profile for patients  -->
+<style>
+    .edit-box {
+        width: 420px;
+        margin: 60px auto;
+        padding: 25px;
+        background: #ffffff;
+        border-radius: 8px;
+        border-top: 6px solid #0d6d3d;
+        box-shadow: 0px 3px 12px rgba(0,0,0,0.2);
+    }
+
+    .edit-box h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #0d6d3d;
+    }
+
+    .form-line {
+        margin-bottom: 16px;
+    }
+
+    .form-line label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #004d25;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .form-line input {
+        width: 100%;
+        padding: 9px;
+        border-radius: 5px;
+        border: 1px solid #a5d6a7;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .form-line input:focus {
+        border-color: #0d6d3d;
+    }
+
+    .save-btn {
+        width: 100%;
+        padding: 11px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        background: #0d6d3d;
+        color: white;
+        cursor: pointer;
+        margin-top: 6px;
+        transition: 0.3s;
+    }
+
+    .save-btn:hover {
+        background: #0a4c2a;
+    }
+</style>
+
+<div class="edit-box">
+
+    <h2>Edit Profile</h2>
+
+    <!-- flash messages -->
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% if msgs %}
+            {% for cat, msg in msgs %}
+                <div class="alert {{cat}}">{{msg}}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <div class="form-line">
+            <label>Your Name</label>
+            <input type="text" name="updated_name" value="{{ patient.username }}" required>
+        </div>
+
+        <div class="form-line">
+            <label>Email ID</label>
+            <input type="email" name="updated_email" value="{{ patient.email }}" required>
+        </div>
+
+        <button class="save-btn">Save Changes</button>
+
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Doctors in {{ department.department_name }}{% endblock %}
+
+{% block content %}
+
+
+<!-- to get list of doctors in each department for patient -->
+<style>
+.page-container {
+    width: 85%;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    color: #0d6d3d;
+    margin-bottom: 25px;
+}
+
+.doctor-card {
+    background: white;
+    border: 1px solid #cce8d4;
+    border-left: 6px solid #0d6d3d;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.doctor-info h3 {
+    font-size: 22px;
+    color: #0d6d3d;
+}
+
+.doctor-info p {
+    margin-top: 5px;
+    font-size: 15px;
+    color: #003d1f;
+}
+
+.view-btn {
+    background: #0d6d3d;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease;
+    height: fit-content;
+}
+
+.view-btn:hover {
+    background: #094e2c;
+}
+</style>
+
+<div class="page-container">
+
+    <h1 class="page-title">Doctors in {{ department.department_name }}</h1>
+
+    {% if doctors %}
+        {% for doc in doctors %}
+        <div class="doctor-card">
+
+            <div class="doctor-info">
+                <h3>{{ doc.username }}</h3>
+                <p>Email: {{ doc.email }}</p>
+                <p>Experience: {{ doc.experience if doc.experience else "Not Updated" }} years</p>
+                <p>Qualification: {{ doc.qualifications if doc.qualifications else "Not Updated" }}</p>
+            </div>
+
+            <a href="/doctor_availability/{{ doc.id }}" class="view-btn">Check Availability</a>
+
+
+        </div>
+        {% endfor %}
+    {% else %}
+        <h3 style="color:red; text-align:center;">No doctors found in this department</h3>
+    {% endif %}
+
+</div>
+
+{% endblock %}

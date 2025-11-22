@@ -160,7 +160,63 @@ def logout():
 
 @app.route('/patient_dashboard')
 def patient_dashboard ():
-    return render_template('patient_dashboard.html')
+    if 'id' not in session or session['role'] != "patient":
+        return redirect(url_for('login'))
+
+    patient_name = session['name']
+    departments = Department.query.all()  
+    return render_template('patient_dashboard.html',patient_name=patient_name, departments=departments)
+
+
+
+
+
+##this both not both but 3 by chatgpt edit patient and patient history
+
+
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    # check if patient is logged in
+    if session.get('role') != 'patient':
+        return redirect(url_for('login'))
+
+    patient_id = session.get('id')
+    patient = User.query.get(patient_id)
+
+    if request.method == 'POST':
+        updated_name = request.form.get('updated_name')
+        updated_email = request.form.get('updated_email')
+
+        # update changed values only
+        patient.username = updated_name
+        patient.email = updated_email
+
+        db.session.commit()
+        flash("Profile information updated successfully", "success")
+        return redirect(url_for('edit_profile'))
+
+    return render_template("edit_profile.html", patient=patient)
+
+
+@app.route('/patient_history')
+def patient_history():
+    # Avoid unauthenticated entry
+    if session.get('role') != 'patient':
+        return redirect(url_for('login'))
+    
+    # Placeholder output for now
+    return "Your medical visit history page is under construction."
+
+@app.route('/see_department/<int:dept_id>')
+def see_department(dept_id):
+    department = Department.query.get_or_404(dept_id)
+    doctors = User.query.filter_by(department_id=dept_id, role='doctor').all()
+    return render_template('patient_department_doctors.html', department=department, doctors=doctors)
+
+
+
 
 
 @app.route('/doctor_dashboard')
