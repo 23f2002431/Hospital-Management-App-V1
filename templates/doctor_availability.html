@@ -1,166 +1,163 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Availability</title>
+<!-- doctor gives his availabilioty -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f6f2;
+        }
 
-{% block title %}Doctor Availability{% endblock %}
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
 
-{% block content %}
- <!--  for doctorsb dashboard where doctors will give their availabilities -->
-<style>
-    body {
-        background-color: #f4f6f9;
-    }
+        .availability-panel {
+            width: 70%;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 0px 12px rgba(0,0,0,0.12);
+            border-top: 5px solid #0c5a2d;
+        }
 
-    .page-wrapper {
-        display: flex;
-        justify-content: center;
-        padding: 40px 0;
-    }
+        h2 {
+            text-align: center;
+            color: #2e8b57;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
 
-    .availability-panel {
-        width: 100%;
-        max-width: 780px;
-        background: #ffffff;
-        padding: 32px 36px;
-        border-radius: 12px;
-        border: 1px solid #e3e6ea;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-    h2 {
-        font-weight: 600;
-        font-size: 26px;
-        color: #1e2a37;
-        margin-bottom: 24px;
-        text-align: center;
-    }
+        th {
+            background: #065828;
+            color: white;
+            padding: 12px;
+            font-size: 18px;
+        }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+        td {
+            padding: 15px;
+            font-size: 16px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
 
-    thead th {
-        background-color: #0c4a31;
-        color: white;
-        font-size: 15px;
-        font-weight: 600;
-        padding: 14px 10px;
-        text-transform: uppercase;
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
-    }
+        /* Green Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 55px;
+            height: 28px;
+        }
 
-    tbody tr {
-        border-bottom: 1px solid #dde1e6;
-    }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-    tbody td {
-        padding: 14px 10px;
-        font-size: 16px;
-        color: #2b2f33;
-        text-align: center;
-    }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
 
-    .switch {
-        position: relative;
-        width: 50px;
-        height: 24px;
-        display: inline-block;
-    }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
 
-    .switch input {
-        display: none;
-    }
+        input:checked + .slider {
+            background-color: #0b4d26;
+        }
 
-    .slider {
-        position: absolute;
-        inset: 0;
-        background-color: #cdcdcd;
-        border-radius: 30px;
-        transition: 0.3s;
-    }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
 
-    .slider:before {
-        content: "";
-        height: 18px;
-        width: 18px;
-        background: #ffffff;
-        position: absolute;
-        left: 3px;
-        bottom: 3px;
-        border-radius: 50%;
-        transition: 0.3s;
-        box-shadow: 0 2px 4px rgba(12, 137, 8, 0.222);
-    }
-
-    input:checked + .slider {
-        background-color: #0c3724;
-    }
-
-    input:checked + .slider:before {
-        transform: translateX(26px);
-    }
-
-    .submit-btn {
-        display: block;
-        margin: 26px auto 0 auto;
-        padding: 10px 36px;
-        font-size: 16px;
-        font-weight: 600;
-        background-color: #0e580e;
-        border: none;
-        border-radius: 8px;
-        color: white;
-        transition: 0.3s;
-    }
-    .submit-btn:hover {
-        background-color: #0f470a;
-    }
-</style>
-
+<body>
 
 <div class="page-wrapper">
     <div class="availability-panel">
 
         <h2>Doctor Availability</h2>
 
-        <form method="POST" action="/doctor_dashboard/availability">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width:40%">Date</th>
-                        <th>Morning</th>
-                        <th>Evening</th>
-                    </tr>
-                </thead>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:40%">Date</th>
+                    <th>Morning</th>
+                    <th>Evening</th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {% for a in availabilities %}
-                    <tr>
-                        <td>{{ a.date }}</td>
+            <tbody>
+                {% for a in availabilities %}
+                <tr>
+                    <td>{{ a.date }}</td>
 
-                        <td>
+                    <!-- MORNING TOGGLE -->
+                    <td>
+                        <form method="POST" action="{{ url_for('toggle_availability') }}">
+                            <input type="hidden" name="id" value="{{ a.date }}">
+                            <input type="hidden" name="slot" value="morning">
+
                             <label class="switch">
-                                <input type="checkbox" name="morning_{{ a.date }}"
-                                {% if a.morning %}checked{% endif %}>
+                                <input type="checkbox"
+                                       onchange="this.form.submit()"
+                                       {% if a.morning %}checked{% endif %}>
                                 <span class="slider"></span>
                             </label>
-                        </td>
+                        </form>
+                    </td>
 
-                        <td>
+                    <!-- EVENING TOGGLE -->
+                    <td>
+                        <form method="POST" action="{{ url_for('toggle_availability') }}">
+                            <input type="hidden" name="id" value="{{ a.date }}">
+                            <input type="hidden" name="slot" value="evening">
+
                             <label class="switch">
-                                <input type="checkbox" name="evening_{{ a.date }}"
-                                {% if a.evening %}checked{% endif %}>
+                                <input type="checkbox"
+                                       onchange="this.form.submit()"
+                                       {% if a.evening %}checked{% endif %}>
                                 <span class="slider"></span>
                             </label>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </form>
+                    </td>
 
-            <button type="submit" class="submit-btn">Save Changes</button>
-        </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
 
     </div>
 </div>
 
-{% endblock %}
+</body>
+</html>

@@ -4,10 +4,58 @@
 
 <style>
 .dashboard-container {
-    text-align: center;
     padding: 30px;
+    max-width: 1000px;
+    margin: auto;
 }
 
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #0d6d3d;
+}
+
+/* Appointment Table */
+.appointment-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.appointment-table th, .appointment-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.appointment-table th {
+    background-color: #0d6d3d;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+}
+
+.completed {
+    background-color: #d4edda; /* light green background */
+    color: #155724;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Department Boxes (existing style) */
 .dept-box {
     width: 250px;
     background: white;
@@ -41,15 +89,57 @@
 
 <div class="dashboard-container">
     <h2>Welcome, {{ patient_name }}</h2>
-    
 
+    <!-- Department Section -->
     {% for dept in departments %}
     <div class="dept-box">
         <h3>{{ dept.department_name }}</h3>
         <a href="{{ url_for('see_department', dept_id=dept.id) }}" class="view-btn">View Details</a>
-
     </div>
     {% endfor %}
+
+    <!-- Appointments Section -->
+    <h2>Your Appointments</h2>
+    {% if appointments %}
+    <table class="appointment-table">
+        <thead>
+            <tr>
+                <th>Sr No.</th>
+                <th>Date</th>
+                <th>Doctor</th>
+                <th>Department</th>
+                <th>Slot</th>
+                <th>Status</th>
+                <th>Treatment</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in appointments %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ appt.date }}</td>
+                <td>{{ appt.doctor.username }}</td>
+                <td>{{ appt.doctor.department.department_name }}</td>
+                <td>{{ appt.time|capitalize }}</td>
+                <td class="{% if appt.status == 'Completed' %}completed{% endif %}">{{ appt.status }}</td>
+                <td>{{ appt.treatment_name if appt.treatment_name else '-' }}</td>
+                <td>
+                    {% if appt.status != 'Cancelled' %}
+                    <form method="POST" action="{{ url_for('cancel_appointment', appt_id=appt.id) }}">
+                        <button type="submit" class="cancel-btn">Cancel</button>
+                    </form>
+                    {% else %}
+                    <span class="cancelled-text">Cancelled</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align:center; margin-top:20px;">No appointments booked yet.</p>
+    {% endif %}
 </div>
 
 {% endblock %}

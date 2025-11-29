@@ -99,13 +99,7 @@
             <h3>{{ doc.username }}</h3>
             <p>Email: {{ doc.email }}</p>
             <p>Department: {{ doc.department.department_name }}</p>
-            <p>Status: 
-                {% if doc.is_active %}
-                    <strong style="color: green;">Active</strong>
-                {% else %}
-                    <strong style="color: red;">Inactive</strong>
-                {% endif %}
-            </p>
+            
         </div>
 
         <div class="action-buttons">
@@ -116,11 +110,7 @@
                Delete
             </a>
 
-            {% if doc.is_active %}
-                <a href="/deactivate_doctor/{{ doc.id }}" class="disable-btn">Disable</a>
-            {% else %}
-                <a href="/activate_doctor/{{ doc.id }}" class="activate-btn">Activate</a>
-            {% endif %}
+           
         </div>
 
     </div>

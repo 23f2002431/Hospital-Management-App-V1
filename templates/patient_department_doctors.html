@@ -74,7 +74,7 @@
                 <p>Qualification: {{ doc.qualifications if doc.qualifications else "Not Updated" }}</p>
             </div>
 
-            <a href="/doctor_availability/{{ doc.id }}" class="view-btn">Check Availability</a>
+            <a href="{{ url_for('book_appointment', doctor_id=doc.id) }}" class="view-btn">Check Availability</a>
 
 
         </div>

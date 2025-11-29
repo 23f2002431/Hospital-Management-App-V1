@@ -74,9 +74,14 @@ class Appointment(db.Model):
     date=db.Column(db.String(20))
     time=db.Column(db.String(20))
     status=db.Column(db.String(20),default='Booked')#pending approved or cancelled
+    user_id = db.Column(db.Integer) 
+    patient_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    doctor_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    treatment_name=db.Column(db.String(250))
 
-    user_id=db.Column(db.Integer,db.ForeignKey("users.id"))
-    treatment=db.Column(db.Integer,db.ForeignKey("treatment.id"),unique=True)
+    patient = db.relationship('User', foreign_keys=[patient_id], backref='appointments_as_patient')
+    doctor = db.relationship('User', foreign_keys=[doctor_id], backref='appointments_as_doctor')
+   
 
 
 class Treatment(db.Model):
@@ -160,12 +165,12 @@ def logout():
 
 @app.route('/patient_dashboard')
 def patient_dashboard ():
-    if 'id' not in session or session['role'] != "patient":
-        return redirect(url_for('login'))
-
+    
+    patient_id = session['id']  
     patient_name = session['name']
     departments = Department.query.all()  
-    return render_template('patient_dashboard.html',patient_name=patient_name, departments=departments)
+    appointments = Appointment.query.filter_by(patient_id=patient_id).all()
+    return render_template('patient_dashboard.html',patient_name=patient_name, departments=departments,appointments=appointments)
 
 
 
@@ -219,19 +224,52 @@ def see_department(dept_id):
 
 
 
+
 @app.route('/doctor_dashboard')
 def doctor_dashboard():
-    doctor_name=session['name']
-    return render_template('doctor_dashboard.html',doctor_name=doctor_name)
+    
+    doctor_id = session['id']
+    doctor_name = session['name']
 
+    # Fetch availability
+    avail = DoctorAvailability.query.filter_by(doctor_id=doctor_id).all()
 
-@app.route('/admin_dashboard')
+    # Fetch appointments for this doctor
+    appointments = Appointment.query.filter_by(doctor_id=doctor_id).order_by(Appointment.date.desc()).all()
+
+    treatments = Treatment.query.all()
+    return render_template(
+        'doctor_dashboard.html',
+        doctor_name=doctor_name,
+        availabilities=avail,
+        appointments=appointments,
+        treatments=treatments
+    )
+
+@app.route('/admin_dashboard', methods=['GET'])
 def admin_dashboard():
-    patient=User.query.filter_by(role='patient').all()
-    print(patient,'This is patient data')
-    doctors=User.query.filter_by(role='doctor').all()
-    departments=Department.query.all()
-    return render_template('admin_dashboard.html',patient=patient,departments=departments,doctors=doctors)
+    if 'id' not in session or session.get('role') != 'admin':
+        return redirect(url_for('login'))
+
+    search_query = request.args.get('search', '').strip()
+
+    # Search all categories if query exists
+    if search_query:
+        departments = Department.query.filter(Department.department_name.ilike(f"%{search_query}%")).all()
+        patients = User.query.filter(User.role=='patient', User.username.ilike(f"%{search_query}%")).all()
+        doctors = User.query.filter(User.role=='doctor', User.username.ilike(f"%{search_query}%")).all()
+    else:
+        departments = Department.query.all()
+        patients = User.query.filter_by(role='patient').all()
+        doctors = User.query.filter_by(role='doctor').all()
+
+    appointments = Appointment.query.order_by(Appointment.date.desc()).all()
+
+    return render_template('admin_dashboard.html',
+                           departments=departments,
+                           patients=patients,
+                           doctors=doctors,
+                           appointments=appointments)
 
 
 @app.route('/admin_dashboard/create_doctor',methods=['GET','POST'])
@@ -374,9 +412,195 @@ def doctor_availability():
 
     return render_template("doctor_availability.html",availabilities=availability_list)
 
+
+@app.route('/doctor_dashboard/toggle_availability',methods=['POST'])
+def toggle_availability():
+
+    doctor_id=session.get('id')
+    date=request.form.get('id')
+    slot=request.form.get('slot')
+    availability=DoctorAvailability.query.filter_by(
+        doctor_id=doctor_id,
+        date=date
+    ).first()
+
+    if availability:
+        if slot=="morning":
+            availability.morning=not availability.morning
+        elif slot=="evening":
+            availability.evening=not availability.evening
+
+        db.session.commit()
+
+    if not doctor_id:
+        return redirect(url_for('registration'))
     
+    return redirect(url_for('doctor_availability'))
+
+@app.route('/book_appointment/<int:doctor_id>',methods=['GET'])
+def book_appointment(doctor_id):
+    patient_id=session.get("id")
+    doctor=User.query.get(doctor_id)
+    dates=next_n_dates()
+    date_strings=[str(d) for d in dates]
+    availability=DoctorAvailability.query.filter(
+        DoctorAvailability.doctor_id==doctor_id,
+        DoctorAvailability.date.in_(date_strings)
+    ).all()
+    availability_map={a.date:a for a in availability}
+    sorted_availability=[availability_map.get(str(d)) for d in dates]
+
+    return render_template(
+        "book_appointment.html",doctor=doctor,availabilities=sorted_availability
+    )
+
+@app.route('/confirm_booking',methods=['POST'])
+def confirm_booking():
+    patient_id=session.get("id")
+    if not patient_id:
+        return redirect(url_for('sign_in'))
+    
+    doctor_id=request.form.get("doctor_id")
+    date=request.form.get("date")
+    slot=request.form.get("slot")
+
+    #prevent double doub le booking
+    existing=Appointment.query.filter_by(
+        doctor_id=doctor_id,
+        patient_id=patient_id,
+        date=date,
+        time=slot
+
+    ).first()
+
+    if existing:
+        flash("you already booked this slot,","warning")
+        return redirect(url_for('book_appointment',doctor_id=doctor_id))
+    
+    #make an appoinytment
+
+    appt=Appointment(
+        date=date,
+        time=slot,
+        doctor_id=doctor_id,
+        patient_id=patient_id,
+        status="Booked"
+    )
+
+    db.session.add(appt)
+
+    availability=DoctorAvailability.query.filter_by(
+        doctor_id=doctor_id,
+        date=date
+    ).first()
+    if availability:
+        if slot == 'morning':
+            availability.morning = False
+        elif slot == 'evening':
+            availability.evening = False
+
+    db.session.commit()
+
+    flash("appointment booked sucessfully","success")
+    return redirect(url_for('patient_dashboard'))
+
+# @app.route('/cancel_appointment/<int:appointment_id>')
+# def cancel_appointment(apppointment _id):
+#     appointment=Appointment.query.get_or_404(appointment_id)
+#     db.session.delete(appointment)
+#     db.session.commit()
+#     flash('Appointment cancelled sucessfully.','iinfo')
+#     return redirect(url_for('patient_dashboard'))
+@app.route('/cancel_appointment/<int:appt_id>', methods=['POST'])
+def cancel_appointment(appt_id):
+    appt = Appointment.query.get_or_404(appt_id)
+    appt.status = "Cancelled"
+    db.session.commit()
+    flash("Appointment cancelled successfully", "success")
+    return redirect(url_for('patient_dashboard'))
 
 
+
+@app.route('/admin_dashboard/appointments')
+def admin_appointments():
+    
+    # Fetch all appointments excluding cancelled
+    appointments = Appointment.query.filter(Appointment.status != "Cancelled").order_by(Appointment.date.desc()).all()
+
+    return render_template('admin_appointments.html', appointments=appointments)
+
+
+
+# @app.route('/admin_dashboard/delete_appointment/<int:appt_id>', methods=['POST'])
+# def delete_appointment(appt_id):
+#     if 'id' not in session or session.get('role') != 'admin':
+#         return redirect(url_for('login'))
+
+#     appt = Appointment.query.get_or_404(appt_id)
+#     db.session.delete(appt)
+#     db.session.commit()
+#     flash("Appointment deleted successfully", "success")
+#     return redirect(url_for('admin_appointments'))
+
+@app.route('/delete_appointment/<int:appt_id>', methods=['POST'])
+def delete_appointment(appt_id):
+    appt = Appointment.query.get_or_404(appt_id)
+    db.session.delete(appt)
+    db.session.commit()
+    flash("Appointment deleted successfully", "success")
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin_dashboard/delete_patient/<int:patient_id>')
+def delete_patient(patient_id):
+    patient = User.query.filter_by(id=patient_id, role='patient').first_or_404()
+    db.session.delete(patient)
+    db.session.commit()
+    flash("Patient deleted successfully", "success")
+    return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/doctor_dashboard/appointments', methods=['GET', 'POST'])
+def doctor_assign_treatment():
+    if 'id' not in session or session.get('role') != 'doctor':
+        return redirect(url_for('login'))
+
+    doctor_id = session.get('id')
+
+    # Fetch appointments that are booked or pending
+    appointments = Appointment.query.filter_by(doctor_id=doctor_id).order_by(Appointment.date.desc()).all()
+    treatments = Treatment.query.all()
+
+    if request.method == 'POST':
+        appt_id = request.form.get('appointment_id')
+        treatment_id = request.form.get('treatment_id')
+        appointment = Appointment.query.get(appt_id)
+        if appointment:
+            appointment.treatment = treatment_id
+            appointment.status = "Completed"
+            db.session.commit()
+            flash("Treatment assigned successfully.", "success")
+        return redirect(url_for('doctor_assign_treatment'))
+
+    return render_template('doctor_assign_treatment.html', appointments=appointments, treatments=treatments)
+
+
+@app.route('/assign_treatment', methods=['POST'])
+def assign_treatment():
+    if 'id' not in session or session.get('role') != 'doctor':
+        return redirect(url_for('login'))
+
+    appointment_id = request.form.get('appointment_id')
+    treatment_name = request.form.get('treatment_name')
+
+    appointment = Appointment.query.get_or_404(appointment_id)
+
+    # Assign the treatment text and mark as completed
+    appointment.treatment_name = treatment_name
+    appointment.status = "Completed"
+
+    db.session.commit()
+    flash("Treatment assigned and appointment marked as completed.", "success")
+    return redirect(url_for('doctor_dashboard'))
 
 #run the app and create a database
 if __name__=='__main__':
