@@ -9,7 +9,7 @@ app= Flask(__name__)
 from flask import Flask
 app = Flask(__name__)
 
-app.secret_key = "123"      # add this line
+app.secret_key = "123"    #thisnis for secerete key
 
 
 #database configuration
@@ -22,7 +22,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 
 
-#####---------------------- Models -----------------------#############
+
 def next_n_dates():
     today=date.today()
     dates=[]
@@ -33,6 +33,7 @@ def next_n_dates():
     return (dates)
 
 
+#####---------------------- Models -----------------------#############
 
 class User(db.Model):
     __tablename__='users'
@@ -176,7 +177,7 @@ def patient_dashboard ():
 
 
 
-##this both not both but 3 by chatgpt edit patient and patient history
+## edit patient and patient history
 
 
 
@@ -231,7 +232,7 @@ def doctor_dashboard():
     doctor_id = session['id']
     doctor_name = session['name']
 
-    # Fetch availability
+    # to give availability
     avail = DoctorAvailability.query.filter_by(doctor_id=doctor_id).all()
 
     # Fetch appointments for this doctor
@@ -239,12 +240,7 @@ def doctor_dashboard():
 
     treatments = Treatment.query.all()
     return render_template(
-        'doctor_dashboard.html',
-        doctor_name=doctor_name,
-        availabilities=avail,
-        appointments=appointments,
-        treatments=treatments
-    )
+        'doctor_dashboard.html',doctor_name=doctor_name,availabilities=avail,appointments=appointments,treatments=treatments)
 
 @app.route('/admin_dashboard', methods=['GET'])
 def admin_dashboard():
@@ -253,7 +249,7 @@ def admin_dashboard():
 
     search_query = request.args.get('search', '').strip()
 
-    # Search all categories if query exists
+    # to serach doctors,departments and patients 
     if search_query:
         departments = Department.query.filter(Department.department_name.ilike(f"%{search_query}%")).all()
         patients = User.query.filter(User.role=='patient', User.username.ilike(f"%{search_query}%")).all()
@@ -265,11 +261,7 @@ def admin_dashboard():
 
     appointments = Appointment.query.order_by(Appointment.date.desc()).all()
 
-    return render_template('admin_dashboard.html',
-                           departments=departments,
-                           patients=patients,
-                           doctors=doctors,
-                           appointments=appointments)
+    return render_template('admin_dashboard.html',departments=departments,patients=patients,doctors=doctors,appointments=appointments)
 
 
 @app.route('/admin_dashboard/create_doctor',methods=['GET','POST'])
@@ -288,7 +280,7 @@ def create_doctor():
             flash('Doctor already exists','error')
             return render_template('admin_dashboard.html', departments=departments)
             
-        
+#flash is left to be added in the frontend
         new_dcot=User(username=name,password=password,email=email,role='doctor',department_id=department_id,experience=experience,qualifications=qualifications)
         db.session.add(new_dcot)
         db.session.commit()
@@ -304,7 +296,7 @@ def view_dct(dept_id):
 
     return render_template('view_doctor.html',doctors=doctors)
 
-
+#to blacklist 
 @app.route('/admin_dashboard/blacklist/<int:user_id>')
 def blacklist(user_id):
     user=User.query.filter_by(id=user_id).first()
@@ -398,11 +390,7 @@ def doctor_availability():
     for d in dates:
         if d not in existing_map:
             new_row=DoctorAvailability(
-                doctor_id=doctor_id,
-                date=d,
-                morning=False,
-                evening=False
-            )
+                doctor_id=doctor_id,date=d,morning=False,evening=False)
             db.session.add(new_row)
             created=True
     if created:
@@ -443,10 +431,7 @@ def book_appointment(doctor_id):
     doctor=User.query.get(doctor_id)
     dates=next_n_dates()
     date_strings=[str(d) for d in dates]
-    availability=DoctorAvailability.query.filter(
-        DoctorAvailability.doctor_id==doctor_id,
-        DoctorAvailability.date.in_(date_strings)
-    ).all()
+    availability=DoctorAvailability.query.filter(DoctorAvailability.doctor_id==doctor_id,DoctorAvailability.date.in_(date_strings)).all()
     availability_map={a.date:a for a in availability}
     sorted_availability=[availability_map.get(str(d)) for d in dates]
 
@@ -464,7 +449,7 @@ def confirm_booking():
     date=request.form.get("date")
     slot=request.form.get("slot")
 
-    #prevent double doub le booking
+    #prevent double double booking
     existing=Appointment.query.filter_by(
         doctor_id=doctor_id,
         patient_id=patient_id,
@@ -524,7 +509,7 @@ def cancel_appointment(appt_id):
 @app.route('/admin_dashboard/appointments')
 def admin_appointments():
     
-    # Fetch all appointments excluding cancelled
+    # to fetch all appointments 
     appointments = Appointment.query.filter(Appointment.status != "Cancelled").order_by(Appointment.date.desc()).all()
 
     return render_template('admin_appointments.html', appointments=appointments)
@@ -619,6 +604,5 @@ if __name__=='__main__':
             db.session.add(admin_db)
             db.session.commit()
     app.run(debug=True)
-
 
 
