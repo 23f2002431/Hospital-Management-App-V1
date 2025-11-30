@@ -1,0 +1,365 @@
+openapi: 3.0.0
+info:
+  title: Hospital Management System API
+  version: 1.0.0
+  description: >
+    API specification for the Hospital Management System (HMS) built using Flask,
+    supporting Admin, Doctor, and Patient operations.
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+
+paths:
+
+  #########################
+  # USER AUTHENTICATION
+  #########################
+
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User registered successfully
+
+  /login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: Login successful
+
+  #########################
+  # USERS
+  #########################
+
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  #########################
+  # DEPARTMENTS
+  #########################
+
+  /departments:
+    get:
+      summary: Get all departments
+      responses:
+        '200':
+          description: List of departments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+
+    post:
+      summary: Create a new department
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentCreate'
+      responses:
+        '201':
+          description: Department created
+
+  #########################
+  # DOCTOR AVAILABILITY
+  #########################
+
+  /availability/{doctor_id}:
+    get:
+      summary: Get availability for a doctor
+      parameters:
+        - in: path
+          name: doctor_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Availability list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DoctorAvailability'
+
+  /availability:
+    post:
+      summary: Add or update doctor availability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoctorAvailabilityCreate'
+      responses:
+        '201':
+          description: Availability updated
+
+  #########################
+  # APPOINTMENTS
+  #########################
+
+  /appointments:
+    post:
+      summary: Book an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentCreate'
+      responses:
+        '201':
+          description: Appointment booked
+
+  /appointments/{patient_id}:
+    get:
+      summary: Get all appointments for a patient
+      parameters:
+        - in: path
+          name: patient_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Appointment list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+
+  #########################
+  # TREATMENTS
+  #########################
+
+  /treatments:
+    get:
+      summary: Get all treatments
+      responses:
+        '200':
+          description: Treatment list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Treatment'
+
+    post:
+      summary: Add a new treatment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TreatmentCreate'
+      responses:
+        '201':
+          description: Treatment created
+
+
+components:
+
+  #########################
+  # SCHEMAS
+  #########################
+
+  schemas:
+
+    #########################
+    # USER
+    #########################
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        department_id:
+          type: integer
+        experience:
+          type: integer
+        qualifications:
+          type: string
+        blacklisted:
+          type: boolean
+
+    UserCreate:
+      type: object
+      required: [username, email, password, role]
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+        department_id:
+          type: integer
+
+    Login:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    #########################
+    # DEPARTMENT
+    #########################
+
+    Department:
+      type: object
+      properties:
+        id:
+          type: integer
+        department_name:
+          type: string
+        description:
+          type: string
+
+    DepartmentCreate:
+      type: object
+      required: [department_name]
+      properties:
+        department_name:
+          type: string
+        description:
+          type: string
+
+    #########################
+    # DOCTOR AVAILABILITY
+    #########################
+
+    DoctorAvailability:
+      type: object
+      properties:
+        id:
+          type: integer
+        doctor_id:
+          type: integer
+        date:
+          type: string
+        morning:
+          type: boolean
+        evening:
+          type: boolean
+
+    DoctorAvailabilityCreate:
+      type: object
+      required: [doctor_id, date]
+      properties:
+        doctor_id:
+          type: integer
+        date:
+          type: string
+        morning:
+          type: boolean
+        evening:
+          type: boolean
+
+    #########################
+    # APPOINTMENT
+    #########################
+
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+        time:
+          type: string
+        status:
+          type: string
+        patient_id:
+          type: integer
+        doctor_id:
+          type: integer
+        treatment_name:
+          type: string
+
+    AppointmentCreate:
+      type: object
+      required: [patient_id, doctor_id, date, time, treatment_name]
+      properties:
+        date:
+          type: string
+        time:
+          type: string
+        patient_id:
+          type: integer
+        doctor_id:
+          type: integer
+        treatment_name:
+          type: string
+
+   
+    # TREATMENTS
+   
+
+    Treatment:
+      type: object
+      properties:
+        id:
+          type: integer
+        treat_name:
+          type: string
+        description:
+          type: string
+
+    TreatmentCreate:
+      type: object
+      required: [treat_name]
+      properties:
+        treat_name:
+          type: string
+        description:
+          type: string

@@ -79,7 +79,7 @@ body {
     {% if session.get('role') == 'patient' %}
         <a href="{{ url_for('patient_dashboard') }}">Home</a>
         <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
-        <a href="{{ url_for('patient_history') }}">History</a>
+        
         <a href="{{ url_for('logout') }}">Logout</a>
 
     {# Logged in as doctor #}

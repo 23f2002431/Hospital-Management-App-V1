@@ -177,7 +177,7 @@ def patient_dashboard ():
 
 
 
-## edit patient and patient history
+## edit patient profile
 
 
 
@@ -206,14 +206,6 @@ def edit_profile():
     return render_template("edit_profile.html", patient=patient)
 
 
-@app.route('/patient_history')
-def patient_history():
-    # Avoid unauthenticated entry
-    if session.get('role') != 'patient':
-        return redirect(url_for('login'))
-    
-    # Placeholder output for now
-    return "Your medical visit history page is under construction."
 
 @app.route('/see_department/<int:dept_id>')
 def see_department(dept_id):
