@@ -1,7 +1,6 @@
 # Hospital Management System
 
-**Author:** Rigveda Lakde  
-**Roll Number:** 23F2002431  
+**Author:** Rigveda Lakde    
 **Course:** BS in Data Science, IIT Madras
 
 ## Project Description
@@ -17,5 +16,5 @@ A web-based Hospital Management System to manage patients, doctors, appointments
 ## Technology Stack
 - Flask (Backend)
 - SQLAlchemy (ORM)
-- SQLite (Database)
+- PostgreSQL (Database)
 
