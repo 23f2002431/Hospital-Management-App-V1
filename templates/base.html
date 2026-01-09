@@ -3,110 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Hospital Management System{% endblock %}</title>
+    <title>{% block title %}MedCore| Hospital Management System{% endblock %}</title>
+
+    <!-- Base Styles -->
+    <style>
+        :root {
+            --primary-blue: #0a2540;
+            --primary-green: #0d6d3d;
+            --accent-green: #2ecc71;
+            --light-bg: #f4f8fb;
+            --text-dark: #1f2933;
+            --text-light: #ffffff;
+            --border-color: #d1d9e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===================== NAVBAR ===================== */
+        .navbar {
+            background: linear-gradient(
+                90deg,
+                var(--primary-blue),
+                var(--primary-green)
+            );
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar .logo {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+        }
+
+        .navbar .logo span {
+            color: var(--accent-green);
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            margin-left: 28px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 4px;
+            transition: 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            background-color: var(--accent-green);
+            left: 0;
+            bottom: 0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        
+
+        /* ===================== MAIN CONTENT ===================== */
+        .main-container {
+            flex: 1;
+            padding: 0px;
+        }
+
+        /* ===================== FOOTER ===================== */
+        .site-footer {
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+            text-align: center;
+            padding: 12px 10px;
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .site-footer span {
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                margin-top: 10px;
+            }
+
+            .nav-links a {
+                margin-left: 0;
+                margin-right: 18px;
+            }
+
+            .main-container {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-<!-- this will be the base file  -->
-<style>
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-
-.nav_bar {
-    background-color: #0d6d3d;          
-    color: white;
-    padding: 15px 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-.nav-links a {
-    color: #e8f5e9;
-    margin-left: 25px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    transition: 0.3s ease;
-}
-
-.nav-links a:hover {
-    color: #b2ffd6; 
-    text-decoration: underline;
-}
-
-/* Footer */
-.site-footer {
-    background-color: #0d6d3d;
-    color: white;
-    text-align: center;
-    padding: 12px;
-    margin-top: 40px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    font-size: 14px;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-}
-
-/* Background */
-body {
-    background: #f4fff7;       
-    padding-bottom: 60px;      
-}
-</style>
 
 <body>
 
-<nav class="nav_bar">
-    <div class="logo">Hospital Management System</div>
+    <!-- ===================== NAVBAR ===================== -->
+    <nav class="navbar">
+        <div class="logo">Med<span>Core</span></div>
 
-    <div class="nav-links">
+        <div class="nav-links">
 
-    {# If patient is logged in #}
-    {% if session.get('role') == 'patient' %}
-        <a href="{{ url_for('patient_dashboard') }}">Home</a>
-        <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
-        
-        <a href="{{ url_for('logout') }}">Logout</a>
+            {% if session.get('role') == 'patient' %}
+                <a href="{{ url_for('patient_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('edit_profile') }}">Profile</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
 
-    {# Logged in as doctor #}
-    {% elif session.get('role') == 'doctor' %}
-        <a href="{{ url_for('doctor_dashboard') }}">Home</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
+            {% elif session.get('role') == 'doctor' %}
+                <a href="{{ url_for('doctor_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
 
-    {# Logged in as admin #}
-    {% elif session.get('role') == 'admin' %}
-        <a href="{{ url_for('admin_dashboard') }}">Home</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
+            {% elif session.get('role') == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
 
-    {# When no one is logged in #}
-    {% else %}
-        <a href="{{ url_for('registration') }}">Register</a>
-        <a href="{{ url_for('login') }}">Login</a>
-    {% endif %}
-</div>
+            {% else %}
+                <a href="{{ url_for('registration') }}">Register</a>
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
 
-</nav>
+        </div>
+    </nav>
 
-{% block content %}
-{% endblock %}
+    <!-- ===================== PAGE CONTENT ===================== -->
+    <main class="main-container">
+        {% block content %}
+        {% endblock %}
+    </main>
 
-<footer class="site-footer">
-    <p>&copy; 2025 Hospital Management System. All Rights Reserved.</p>
-</footer>
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer">
+        <p>
+            &copy; 2025 <span>MedCore</span> Hospital Management System.
+            All Rights Reserved.
+        </p>
+    </footer>
 
 </body>
 </html>

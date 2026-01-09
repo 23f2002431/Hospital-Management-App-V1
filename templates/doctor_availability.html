@@ -1,163 +1,205 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Doctor Availability</title>
-<!-- doctor gives his availabilioty -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f6f2;
-        }
+{% extends "base.html" %}
+{% block title %}Doctor Availability | MedCore{% endblock %}
 
-        .page-wrapper {
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
+{% block content %}
+<style>
+:root {
+    --primary-blue: #0a2540;
+    --primary-green: #0d6d3d;
+    --accent-green: #2ecc71;
+    --light-bg: #f4f8fb;
+    --card-bg: #ffffff;
+    --border-color: #dce5ec;
+    --danger: #c62828;
+    --warning: #ff6f00;
+    --text-dark: #1f2933;
+}
 
-        .availability-panel {
-            width: 70%;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0px 0px 12px rgba(0,0,0,0.12);
-            border-top: 5px solid #0c5a2d;
-        }
+/* PAGE WRAPPER */
+.page-wrapper {
+    max-width: 900px;
+    margin: 40px auto 60px;
+    padding: 0 20px;
+}
 
-        h2 {
-            text-align: center;
-            color: #2e8b57;
-            margin-bottom: 25px;
-            font-size: 26px;
-        }
+/* BACK BUTTON */
+.back-btn {
+    display: inline-block;
+    margin-bottom: 25px;
+    padding: 10px 18px;
+    background: var(--primary-green);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
+.back-btn:hover {
+    background: var(--accent-green);
+}
 
-        th {
-            background: #065828;
-            color: white;
-            padding: 12px;
-            font-size: 18px;
-        }
+/* PAGE TITLE */
+h2 {
+    text-align: center;
+    color: var(--primary-blue);
+    font-size: 28px;
+    margin-bottom: 40px;
+}
 
-        td {
-            padding: 15px;
-            font-size: 16px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
+/* AVAILABILITY TABLE */
+.availability-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
 
-        /* Green Toggle Switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 28px;
-        }
+.availability-table th,
+.availability-table td {
+    padding: 16px 12px;
+    text-align: center;
+    font-size: 15px;
+}
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+.availability-table th {
+    background: var(--primary-green);
+    color: white;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 28px;
-        }
+.availability-table tr:nth-child(even) {
+    background: #f4f8f4;
+}
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
+.availability-table tr:hover {
+    background: #e8f5e9;
+}
 
-        input:checked + .slider {
-            background-color: #0b4d26;
-        }
+/* SLOT TOGGLE */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
 
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-    </style>
-</head>
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
-<body>
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-green);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* SLOT LABEL */
+.slot-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* FORM INLINE */
+.inline-form {
+    display: inline-block;
+    margin: 0;
+}
+</style>
 
 <div class="page-wrapper">
-    <div class="availability-panel">
 
-        <h2>Doctor Availability</h2>
+    <!-- BACK BUTTON -->
+    <a href="{{ url_for('doctor_dashboard') }}" class="back-btn">← Back to Dashboard</a>
 
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:40%">Date</th>
-                    <th>Morning</th>
-                    <th>Evening</th>
-                </tr>
-            </thead>
+    <!-- PAGE TITLE -->
+    <h2>Doctor Availability</h2>
 
-            <tbody>
-                {% for a in availabilities %}
-                <tr>
-                    <td>{{ a.date }}</td>
+    {% if availabilities and availabilities|length > 0 %}
+    <table class="availability-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Morning</th>
+                <th>Evening</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in availabilities %}
+            <tr>
+                <td>{{ a.date }}</td>
 
-                    <!-- MORNING TOGGLE -->
-                    <td>
-                        <form method="POST" action="{{ url_for('toggle_availability') }}">
-                            <input type="hidden" name="id" value="{{ a.date }}">
-                            <input type="hidden" name="slot" value="morning">
+                <!-- MORNING TOGGLE -->
+                <td>
+                    <form method="POST" action="{{ url_for('toggle_availability') }}" class="inline-form">
+                        <input type="hidden" name="id" value="{{ a.date }}">
+                        <input type="hidden" name="slot" value="morning">
+                        <label class="switch">
+                            <input type="checkbox" onchange="this.form.submit()"
+                                   {% if a.morning %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                    </form>
+                </td>
 
-                            <label class="switch">
-                                <input type="checkbox"
-                                       onchange="this.form.submit()"
-                                       {% if a.morning %}checked{% endif %}>
-                                <span class="slider"></span>
-                            </label>
-                        </form>
-                    </td>
+                <!-- EVENING TOGGLE -->
+                <td>
+                    <form method="POST" action="{{ url_for('toggle_availability') }}" class="inline-form">
+                        <input type="hidden" name="id" value="{{ a.date }}">
+                        <input type="hidden" name="slot" value="evening">
+                        <label class="switch">
+                            <input type="checkbox" onchange="this.form.submit()"
+                                   {% if a.evening %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                    </form>
+                </td>
 
-                    <!-- EVENING TOGGLE -->
-                    <td>
-                        <form method="POST" action="{{ url_for('toggle_availability') }}">
-                            <input type="hidden" name="id" value="{{ a.date }}">
-                            <input type="hidden" name="slot" value="evening">
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div style="text-align:center; margin-top:40px; font-size:16px; color:#555;">
+            No availability data yet.
+        </div>
+    {% endif %}
 
-                            <label class="switch">
-                                <input type="checkbox"
-                                       onchange="this.form.submit()"
-                                       {% if a.evening %}checked{% endif %}>
-                                <span class="slider"></span>
-                            </label>
-                        </form>
-                    </td>
-
-                </tr>
-                {% endfor %}
-            </tbody>
-
-        </table>
-
-    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

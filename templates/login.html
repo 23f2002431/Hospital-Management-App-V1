@@ -1,120 +1,184 @@
 {% extends "base.html" %}
 
-{% block title %}Login Page{% endblock %}
+{% block title %}Login | MedCore{% endblock %}
 
 {% block content %}
 
 <style>
-    .login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background: #e8f5e9;
-        min-height: 80vh;
+    /* REMOVE BASE PADDING FOR AUTH PAGES */
+    .main-container {
+       
+        padding: 0 !important;
+        min-height: calc(100vh - 140px);
+        background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
+        padding: 0 !important;
     }
 
-    .login-box {
-        background: white;
-        width: 360px;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        border-top: 8px solid #0d6d3d;
+    :root {
+        --primary-blue: #0a2540;
+        --primary-green: #0d6d3d;
+        --border-color: #dce5ec;
+        --error-red: #c62828;
     }
 
-    .login-box h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #0d6d3d;
-    }
-
-    .input-group {
-        margin-bottom: 15px;
-    }
-
-    .input-group label {
-        display: block;
-        font-size: 14px;
-        margin-bottom: 5px;
-        color: #004d25;
-    }
-
-    .input-group input {
+    /* FULL SCREEN WRAPPER */
+    .auth-wrapper {
+        min-height: calc(100vh - 140px);;
         width: 100%;
-        padding: 10px;
-        border: 1px solid #a5d6a7;
-        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* background: linear-gradient(135deg, #e3f2fd, #e8f5e9); */
+    }
+
+    /* CARD */
+    .auth-card {
+        background: #ffffff;
+        width: 100%;
+        max-width: 420px;
+        border-radius: 12px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    /* HEADER */
+    .auth-header {
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+        color: white;
+        text-align: center;
+        padding: 24px;
+    }
+
+    .auth-header h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .auth-header p {
+        margin-top: 6px;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    /* BODY */
+    .auth-body {
+        padding: 28px 24px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: var(--primary-blue);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 11px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
         font-size: 15px;
         outline: none;
     }
 
-    .input-group input:focus {
-        border-color: #0d6d3d;
+    .form-group input:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 2px rgba(13, 109, 61, 0.15);
     }
 
-    .submit-btn {
+    /* ERROR MESSAGE */
+    .error-message {
+        background: #fdecea;
+        color: var(--error-red);
+        border-left: 4px solid var(--error-red);
+        padding: 10px 12px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    /* BUTTON */
+    .auth-btn {
         width: 100%;
         padding: 12px;
-        background: #0d6d3d;
+        background: var(--primary-green);
         color: white;
         border: none;
         border-radius: 6px;
         font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
-        margin-top: 5px;
-        transition: 0.3s;
+        margin-top: 10px;
     }
 
-    .submit-btn:hover {
-        background: #0c5c34;
+    .auth-btn:hover {
+        background: #0b5c33;
     }
 
-    .signup-link {
-        margin-top: 15px;
+    /* FOOTER TEXT */
+    .auth-footer {
+        margin-top: 16px;
         text-align: center;
         font-size: 14px;
     }
 
-    .signup-link a {
-        color: #0d6d3d;
+    .auth-footer a {
+        color: var(--primary-green);
+        font-weight: 600;
         text-decoration: none;
-        font-weight: bold;
     }
 
-    .signup-link a:hover {
+    .auth-footer a:hover {
         text-decoration: underline;
     }
 </style>
-{% if error_message %}
-{error_message}
-{% endif %}
 
-<div class="login-container">
-    <div class="login-box">
-        <h2>Login</h2>
+<div class="auth-wrapper">
+    <div class="auth-card">
 
-        <form action="/login" method="POST">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Login to MedCore HMS</p>
+        </div>
 
-            <div class="input-group">
-                <label>Full Name</label>
-                <input type="text" name="frontend_name" id="fullname" placeholder="Enter your full name" required>
-            </div>
+        <div class="auth-body">
 
-            <div class="input-group"> 
-                <label>Password</label>
-                <input type="password" name="frontend_password" id="password" placeholder="Enter password" required>
-            </div>
+            {% if error_message %}
+                <div class="error-message">
+                    {{ error_message }}
+                </div>
+            {% endif %}
 
-            <button class="submit-btn" type="submit">Login</button>
+            <form action="/login" method="POST">
 
-            <div class="signup-link">
-                Don't have an account?
-                <a href="{{ url_for('registration') }}">Sign Up</a>
-            </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="frontend_name"
+                           placeholder="Enter your full name" required>
+                </div>
 
-        </form>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="frontend_password"
+                           placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="auth-btn">Login</button>
+
+                <div class="auth-footer">
+                    Don’t have an account?
+                    <a href="{{ url_for('registration') }}">Sign Up</a>
+                </div>
+
+            </form>
+        </div>
+
     </div>
 </div>
 

@@ -1,67 +1,140 @@
 {% extends "base.html" %}
-
 {% block title %}Doctors in {{ department.department_name }}{% endblock %}
 
 {% block content %}
 
-
-<!-- to get list of doctors in each department for patient -->
 <style>
-.page-container {
-    width: 85%;
-    margin: 40px auto;
-    padding: 20px;
+    :root {
+        --primary-green: #0d6d3d;
+        --light-green: #e8f5e9;
+        --dark-green: #004d25;
+    }
+
+    body {
+        background: var(--light-green);
+    }
+
+    .page-container {
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 10px 20px 30px;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 35px;
+    }
+    .department-info {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 35px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    border-left: 7px solid var(--primary-green);
 }
 
-.page-title {
-    text-align: center;
-    font-size: 28px;
-    color: #0d6d3d;
-    margin-bottom: 25px;
+.department-info h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-green);
 }
 
-.doctor-card {
-    background: white;
-    border: 1px solid #cce8d4;
-    border-left: 6px solid #0d6d3d;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 18px;
-    display: flex;
-    justify-content: space-between;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+.department-info p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--dark-green);
 }
 
-.doctor-info h3 {
-    font-size: 22px;
-    color: #0d6d3d;
-}
 
-.doctor-info p {
-    margin-top: 5px;
-    font-size: 15px;
-    color: #003d1f;
-}
+    .doctor-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 22px 26px;
+        margin-bottom: 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        border-left: 7px solid var(--primary-green);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.view-btn {
-    background: #0d6d3d;
-    color: white;
-    padding: 10px 18px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s ease;
-    height: fit-content;
-}
+    .doctor-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+    }
 
-.view-btn:hover {
-    background: #094e2c;
-}
+    .doctor-info h3 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--primary-green);
+    }
+
+    .doctor-info p {
+        margin: 6px 0 0;
+        font-size: 15px;
+        color: var(--dark-green);
+    }
+
+    .view-btn {
+        background: var(--primary-green);
+        color: #ffffff;
+        padding: 12px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    .view-btn:hover {
+        background: #0b5c33;
+        transform: scale(1.05);
+    }
+
+    .no-data {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #c62828;
+    }
+
+    @media (max-width: 768px) {
+        .doctor-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .view-btn {
+            align-self: flex-end;
+        }
+    }
 </style>
 
 <div class="page-container">
 
-    <h1 class="page-title">Doctors in {{ department.department_name }}</h1>
+    <h1 class="page-title">
+        Doctors in {{ department.department_name }}
+    </h1>
+
+    
+<!-- Department Description -->
+<div class="department-info">
+    <h2>About {{ department.department_name }}</h2>
+    <p>
+        {{ department.description if department.description else "Department description not available." }}
+    </p>
+</div>
+
 
     {% if doctors %}
         {% for doc in doctors %}
@@ -74,13 +147,17 @@
                 <p>Qualification: {{ doc.qualifications if doc.qualifications else "Not Updated" }}</p>
             </div>
 
-            <a href="{{ url_for('book_appointment', doctor_id=doc.id) }}" class="view-btn">Check Availability</a>
-
+            <a href="{{ url_for('book_appointment', doctor_id=doc.id) }}"
+               class="view-btn">
+                Check Availability
+            </a>
 
         </div>
         {% endfor %}
     {% else %}
-        <h3 style="color:red; text-align:center;">No doctors found in this department</h3>
+        <div class="no-data">
+            No doctors found in this department
+        </div>
     {% endif %}
 
 </div>

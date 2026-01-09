@@ -1,122 +1,164 @@
 {% extends "base.html" %}
 
-{% block title %}Sign Up Page{% endblock %}
+{% block title %}Sign Up | MedCore{% endblock %}
 
 {% block content %}
 
 <style>
-    .signup-container {
+    :root {
+        --primary-blue: #0a2540;
+        --primary-green: #0d6d3d;
+        --light-bg: #f4f8fb;
+        --border-color: #dce5ec;
+    }
+
+    /* Page Wrapper */
+    .auth-page {
+        min-height: calc(100vh - 140px); /* header + footer handled */
         display: flex;
-        justify-content: center;
         align-items: center;
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background: #e8f5e9;
-        min-height: 80vh;   
+        justify-content: center;
+        background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
+        padding: 40px 15px;
     }
 
-    .signup-box {
-        background: white;
-        width: 360px;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        border-top: 8px solid #0d6d3d;
-    }
-
-    .signup-box h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #0d6d3d;
-    }
-
-    .input-group {
-        margin-bottom: 15px;
-    }
-
-    .input-group label {
-        display: block;
-        font-size: 14px;
-        margin-bottom: 5px;
-        color: #004d25;
-    }
-
-    .input-group input {
+    /* Card */
+    .auth-card {
+        background: #ffffff;
         width: 100%;
-        padding: 10px;
-        border: 1px solid #a5d6a7;
-        border-radius: 5px;
+        max-width: 420px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    /* Card Header */
+    .auth-header {
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+        color: white;
+        text-align: center;
+        padding: 25px 20px;
+    }
+
+    .auth-header h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .auth-header p {
+        margin-top: 5px;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    /* Card Body */
+    .auth-body {
+        padding: 30px 25px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: var(--primary-blue);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
         font-size: 15px;
         outline: none;
+        transition: border 0.3s, box-shadow 0.3s;
     }
 
-    .input-group input:focus {
-        border-color: #0d6d3d;
+    .form-group input:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 2px rgba(13, 109, 61, 0.15);
     }
 
-    .submit-btn {
+    /* Button */
+    .auth-btn {
         width: 100%;
         padding: 12px;
-        background: #0d6d3d;
+        background: var(--primary-green);
         color: white;
         border: none;
         border-radius: 6px;
         font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
-        margin-top: 5px;
-        transition: 0.3s;
+        transition: background 0.3s, transform 0.2s;
+        margin-top: 10px;
     }
 
-    .submit-btn:hover {
-        background: #0c5c34;
+    .auth-btn:hover {
+        background: #0b5c33;
+        transform: translateY(-1px);
     }
 
-    .login-link {
-        margin-top: 15px;
+    /* Footer text inside card */
+    .auth-footer {
         text-align: center;
+        margin-top: 18px;
         font-size: 14px;
+        color: #555;
     }
 
-    .login-link a {
-        color: #0d6d3d;
+    .auth-footer a {
+        color: var(--primary-green);
+        font-weight: 600;
         text-decoration: none;
-        font-weight: bold;
     }
 
-    .login-link a:hover {
+    .auth-footer a:hover {
         text-decoration: underline;
     }
 </style>
 
-<div class="signup-container">
-    <div class="signup-box">
-        <h2>Sign Up</h2>
+<div class="auth-page">
+    <div class="auth-card">
 
-        <form action="/registration" method="post">
+        <div class="auth-header">
+            <h2>Create Account</h2>
+            <p>Join MedCore Hospital System</p>
+        </div>
 
-            <div class="input-group">
-                <label>Full Name</label>
-                <input type="text" name="username" id="fullname" placeholder="Enter your full name" required>
-            </div>
+        <div class="auth-body">
+            <form action="/registration" method="post">
 
-            <div class="input-group">
-                <label>Email</label>
-                <input type="email" name="email" id="email" placeholder="Enter email" required>
-            </div> 
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="username" id="fullname" placeholder="Enter your full name" required>
+                </div>
 
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" name="password" id="password" placeholder="Enter password" required>
-            </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" id="email" placeholder="Enter your email" required>
+                </div>
 
-            <button class="submit-btn" type="submit">Sign Up</button>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" id="password" placeholder="Create a password" required>
+                </div>
 
-            <div class="login-link">
-                Already have an account?
-                <a href="{{ url_for('login') }}">Login here</a>
-            </div>
+                <button type="submit" class="auth-btn">Sign Up</button>
 
-        </form>
+                <div class="auth-footer">
+                    Already have an account?
+                    <a href="{{ url_for('login') }}">Login here</a>
+                </div>
+
+            </form>
+        </div>
+
     </div>
 </div>
 

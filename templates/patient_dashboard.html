@@ -1,145 +1,288 @@
 {% extends "base.html" %}
-
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                <i class="fa-solid fa-circle-check"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
 <style>
-.dashboard-container {
-    padding: 30px;
-    max-width: 1000px;
-    margin: auto;
+
+    .alert {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #0d6d3d;
-}
-
-/* Appointment Table */
-.appointment-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.appointment-table th, .appointment-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
-}
-
-.appointment-table th {
-    background-color: #0d6d3d;
-    color: white;
-}
-
-.cancel-btn {
-    background-color: #e74c3c;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.cancel-btn:hover {
-    background-color: #c0392b;
-}
-
-.completed {
-    background-color: #d4edda; 
-    color: #155724;
-    font-weight: bold;
-    border-radius: 4px;
-    padding: 5px;
+.alert-success {
+    background: #e8f5e9;
+    color: #1b5e20;
+    border-left: 5px solid #2e7d32;
 }
 
 
-.dept-box {
-    width: 250px;
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-    display: inline-block;
-    margin: 15px;
-    border-top: 5px solid #0d6d3d;
+:root{
+    --blue-dark:#0a2540;
+    --green-dark:#0d6d3d;
+    --green-soft:#1fa971;
+    --bg:#eef4f9;
+    --card:#ffffff;
+    --text:#1f2933;
+    --danger:#c62828;
+    --border:#d9e3ec;
 }
 
-.dept-box h3 {
-    color: #0d6d3d;
-    margin-bottom: 10px;
+/* PAGE */
+body{
+    background:var(--bg);
 }
 
-.view-btn {
-    display: inline-block;
-    margin-top: 10px;
-    background: #0d6d3d;
-    padding: 8px 15px;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
+/* CONTAINER */
+.dashboard-container{
+    max-width:1100px;
+    margin:50px auto;
+    padding:0 20px;
 }
 
-.view-btn:hover {
-    background: #094e2b;
+/* HEADER */
+.dashboard-title{
+    text-align:center;
+    font-size:32px;
+    font-weight:700;
+    color:var(--green-dark);
+    margin-bottom:50px;
+}
+
+/* ================= DEPARTMENTS ================= */
+
+.dept-section{
+    margin-bottom:70px;
+}
+
+.dept-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:30px;
+}
+
+.dept-card{
+    background:var(--card);
+    border-radius:16px;
+    padding:28px 24px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.12);
+    border-top:5px solid var(--green-dark);
+    transition:0.3s;
+}
+
+.dept-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 16px 35px rgba(0,0,0,0.18);
+}
+
+.dept-card h3{
+    font-size:22px;
+    margin-bottom:18px;
+    font-weight:700;
+    color:var(--blue-dark);
+}
+
+.dept-card a{
+    display:inline-block;
+    background:linear-gradient(135deg,var(--green-dark),var(--green-soft));
+    padding:10px 24px;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+}
+
+/* ================= APPOINTMENTS ================= */
+
+.section-title{
+    text-align:center;
+    font-size:26px;
+    font-weight:700;
+    color:var(--blue-dark);
+    margin-bottom:35px;
+}
+
+.appointments{
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+}
+
+/* APPOINTMENT CARD */
+.appointment-card{
+    background:var(--card);
+    border-left:8px solid var(--green-dark);
+    border-radius:18px;
+    padding:28px;
+    box-shadow:0 14px 30px rgba(0,0,0,0.15);
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:22px;
+}
+
+/* INFO */
+.info h4{
+    font-size:14px;
+    color:var(--blue-dark);
+    margin-bottom:6px;
+    font-weight:700;
+}
+
+.info p{
+    font-size:15px;
+    color:var(--text);
+    font-weight:600;
+    margin:0;
+}
+
+/* STATUS */
+.status{
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700;
+    color:white;
+}
+
+.status.completed{background:var(--green-soft);}
+.status.pending{background:var(--green-dark);}
+.status.cancelled{background:var(--danger);}
+
+/* CANCEL BUTTON */
+.cancel-form{
+    display:flex;
+    align-items:center;
+}
+
+.cancel-btn{
+    background:var(--danger);
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.cancel-btn:hover{
+    background:#a61e1e;
+}
+
+/* EMPTY */
+.empty{
+    text-align:center;
+    padding:35px;
+    background:#e3edf4;
+    border-radius:18px;
+    font-size:16px;
+    color:#555;
 }
 </style>
 
 <div class="dashboard-container">
-    <h2>Welcome, {{ patient_name }}</h2>
 
-    <!-- Department Section -->
-    {% for dept in departments %}
-    <div class="dept-box">
-        <h3>{{ dept.department_name }}</h3>
-        <a href="{{ url_for('see_department', dept_id=dept.id) }}" class="view-btn">View Details</a>
+    <div class="dashboard-title">
+        Welcome, {{ patient_name }}
     </div>
-    {% endfor %}
 
-    <!-- Appointments Section -->
-    <h2>Your Appointments</h2>
-    {% if appointments %}
-    <table class="appointment-table">
-        <thead>
-            <tr>
-                <th>Sr No.</th>
-                <th>Date</th>
-                <th>Doctor</th>
-                <th>Department</th>
-                <th>Slot</th>
-                <th>Status</th>
-                <th>Treatment</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for appt in appointments %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ appt.date }}</td>
-                <td>{{ appt.doctor.username }}</td>
-                <td>{{ appt.doctor.department.department_name }}</td>
-                <td>{{ appt.time|capitalize }}</td>
-                <td class="{% if appt.status == 'Completed' %}completed{% endif %}">{{ appt.status }}</td>
-                <td>{{ appt.treatment_name if appt.treatment_name else '-' }}</td>
-                <td>
-                    {% if appt.status != 'Cancelled' %}
-                    <form method="POST" action="{{ url_for('cancel_appointment', appt_id=appt.id) }}">
-                        <button type="submit" class="cancel-btn">Cancel</button>
-                    </form>
-                    {% else %}
-                    <span class="cancelled-text">Cancelled</span>
-                    {% endif %}
-                </td>
-            </tr>
+    <!-- DEPARTMENTS -->
+    <div class="dept-section">
+        <div class="dept-grid">
+            {% for dept in departments %}
+            <div class="dept-card">
+                <h3>{{ dept.department_name }}</h3>
+                <a href="{{ url_for('see_department', dept_id=dept.id) }}">
+                    View Doctors
+                </a>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p style="text-align:center; margin-top:20px;">No appointments booked yet.</p>
-    {% endif %}
+        </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="section-title">Your Appointments</div>
+
+    <div class="appointments">
+        {% if appointments %}
+            {% for appt in appointments | reverse %}
+            <div class="appointment-card">
+
+                <div class="info">
+                    <h4>Doctor</h4>
+                    <p>{{ appt.doctor.username }}</p>
+                </div>
+
+                <div class="info">
+                    <h4>Department</h4>
+                    <p>{{ appt.doctor.department.department_name }}</p>
+                </div>
+
+                <div class="info">
+                    <h4>Date</h4>
+                    <p>{{ appt.date }}</p>
+                </div>
+
+                <div class="info">
+                    <h4>Slot</h4>
+                    <p>{{ appt.time|capitalize }}</p>
+                </div>
+
+                <div class="info">
+                    <h4>Status</h4>
+                    {% if appt.status == 'Completed' %}
+                        <span class="status completed">Completed</span>
+                    {% elif appt.status == 'Cancelled' %}
+                        <span class="status cancelled">Cancelled</span>
+                    {% else %}
+                        <span class="status pending">{{ appt.status }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="info">
+                    <h4>Treatment</h4>
+                    <p>{{ appt.treatment_name if appt.treatment_name else 'Not Assigned Yet' }}</p>
+                </div>
+
+                <div class="cancel-form">
+                    {% if appt.status not in ['Cancelled','Completed'] %}
+                    <form method="POST" action="{{ url_for('cancel_appointment', appt_id=appt.id) }}">
+                        <button class="cancel-btn" type="submit">
+                            Cancel Appointment
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">No appointments booked yet.</div>
+        {% endif %}
+    </div>
+
 </div>
+<script>
+    setTimeout(() => {
+        const alert = document.querySelector('.alert');
+        if (alert) alert.style.opacity = '0';
+    }, 4000);
+</script>
 
 {% endblock %}

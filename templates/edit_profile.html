@@ -1,62 +1,92 @@
 {% extends "base.html" %}
-
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Edit Profile | MedCore{% endblock %}
 
 {% block content %}
 
-<!--  edit profile for patients  -->
 <style>
-    .edit-box {
-        width: 420px;
-        margin: 60px auto;
-        padding: 25px;
-        background: #ffffff;
-        border-radius: 8px;
-        border-top: 6px solid #0d6d3d;
-        box-shadow: 0px 3px 12px rgba(0,0,0,0.2);
+    /* PAGE BACKGROUND */
+    .profile-wrapper {
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
+        padding: 30px 15px;
     }
 
-    .edit-box h2 {
+    /* CARD */
+    .profile-card {
+        background: #ffffff;
+        width: 100%;
+        max-width: 420px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        overflow: hidden;
+    }
+
+    /* HEADER */
+    .profile-header {
+        background: linear-gradient(135deg, #0a2540, #0d6d3d);
+        color: white;
+        padding: 22px;
         text-align: center;
-        margin-bottom: 20px;
-        color: #0d6d3d;
+    }
+
+    .profile-header h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .profile-header p {
+        margin-top: 6px;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    /* BODY */
+    .profile-body {
+        padding: 26px 24px;
     }
 
     .form-line {
-        margin-bottom: 16px;
+        margin-bottom: 18px;
     }
 
     .form-line label {
         font-size: 14px;
         font-weight: 600;
-        color: #004d25;
+        color: #0a2540;
         display: block;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
     }
 
     .form-line input {
         width: 100%;
-        padding: 9px;
-        border-radius: 5px;
-        border: 1px solid #a5d6a7;
+        padding: 11px;
+        border-radius: 6px;
+        border: 1px solid #dce5ec;
         font-size: 15px;
         outline: none;
     }
 
     .form-line input:focus {
         border-color: #0d6d3d;
+        box-shadow: 0 0 0 2px rgba(13, 109, 61, 0.15);
     }
 
+    /* BUTTON */
     .save-btn {
         width: 100%;
-        padding: 11px;
+        padding: 12px;
         font-size: 16px;
         border: none;
         border-radius: 6px;
         background: #0d6d3d;
         color: white;
         cursor: pointer;
-        margin-top: 6px;
+        margin-top: 10px;
+        font-weight: 600;
         transition: 0.3s;
     }
 
@@ -65,34 +95,38 @@
     }
 </style>
 
-<div class="edit-box">
+<div class="profile-wrapper">
 
-    <h2>Edit Profile</h2>
+    <div class="profile-card">
 
-    <!-- flash messages -->
-    <!-- {% with msgs = get_flashed_messages(with_categories=true) %}
-        {% if msgs %}
-            {% for cat, msg in msgs %}
-                <div class="alert {{cat}}">{{msg}}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %} -->
-
-    <form method="POST">
-
-        <div class="form-line">
-            <label>Your Name</label>
-            <input type="text" name="updated_name" value="{{ patient.username }}" required>
+        <div class="profile-header">
+            <h2>Edit Profile</h2>
+            <p>Update your personal information</p>
         </div>
 
-        <div class="form-line">
-            <label>Email ID</label>
-            <input type="email" name="updated_email" value="{{ patient.email }}" required>
+        <div class="profile-body">
+
+            <form method="POST">
+
+                <div class="form-line">
+                    <label>Your Name</label>
+                    <input type="text" name="updated_name"
+                           value="{{ patient.username }}" required>
+                </div>
+
+                <div class="form-line">
+                    <label>Email Address</label>
+                    <input type="email" name="updated_email"
+                           value="{{ patient.email }}" required>
+                </div>
+
+                <button class="save-btn">Save Changes</button>
+
+            </form>
+
         </div>
+    </div>
 
-        <button class="save-btn">Save Changes</button>
-
-    </form>
 </div>
 
 {% endblock %}

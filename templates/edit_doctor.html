@@ -1,57 +1,81 @@
 {% extends "base.html" %}
-
 {% block title %}Edit Doctor{% endblock %}
 
 {% block content %}
 
-
-<!-- edit doctor details by admin in that list -->
 <style>
-    .edit-container {
-        width: 60%;
-        margin: 30px auto;
+    :root {
+        --primary-green: #0d6d3d;
+        --light-green: #e8f5e9;
+        --dark-green: #004d25;
+        --danger-red: #c62828;
+    }
+
+    body {
+        background: var(--light-green);
+    }
+
+    .edit-wrapper {
+        max-width: 700px;
+        margin: 70px auto;
+        padding: 25px 30px;
         background: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
+        border-radius: 16px;
+        box-shadow: 0 10px 22px rgba(0,0,0,0.15);
         border: 1px solid #c8e6c9;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .edit-title {
-        font-size: 26px;
-        font-weight: bold;
-        color: #0d6d3d;
         text-align: center;
-        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: 30px;
     }
 
     .edit-form label {
-        font-size: 15px;
-        font-weight: 600;
-        color: #0d6d3d;
-        margin-bottom: 5px;
         display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--dark-green);
+        margin-bottom: 6px;
     }
 
     .edit-form input,
     .edit-form select {
         width: 100%;
-        padding: 12px;
+        padding: 12px 14px;
         margin-bottom: 18px;
+        border-radius: 8px;
         border: 1px solid #b2dfdb;
-        border-radius: 6px;
         font-size: 15px;
+        outline: none;
+        transition: border 0.2s;
+    }
+
+    .edit-form input:focus,
+    .edit-form select:focus {
+        border-color: var(--primary-green);
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+        gap: 15px;
     }
 
     .btn-submit {
-        background: #0d6d3d;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
+        flex: 1;
+        background: var(--primary-green);
+        color: #ffffff;
+        padding: 12px;
+        border-radius: 10px;
         border: none;
         font-size: 16px;
-        width: 48%;
+        font-weight: 600;
         cursor: pointer;
+        transition: background 0.25s ease;
     }
 
     .btn-submit:hover {
@@ -59,31 +83,34 @@
     }
 
     .btn-cancel {
-        background: #c62828;
+        flex: 1;
+        background: var(--danger-red);
         color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        border: none;
+        padding: 12px;
+        border-radius: 10px;
         font-size: 16px;
-        width: 48%;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
+        font-weight: 600;
         text-align: center;
+        text-decoration: none;
+        transition: background 0.25s ease;
     }
 
     .btn-cancel:hover {
         background: #a71f1f;
     }
 
-    .button-group {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
+    @media (max-width: 768px) {
+        .edit-wrapper {
+            margin: 40px 15px;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
     }
 </style>
 
-<div class="edit-container">
+<div class="edit-wrapper">
 
     <h2 class="edit-title">Edit Doctor Details</h2>
 
@@ -105,7 +132,7 @@
         <select name="department_id" required>
             <option value="">Select Department</option>
             {% for dept in departments %}
-                <option value="{{ dept.id }}" 
+                <option value="{{ dept.id }}"
                     {% if doctor.department_id == dept.id %} selected {% endif %}>
                     {{ dept.department_name }}
                 </option>
@@ -113,7 +140,7 @@
         </select>
 
         <div class="button-group">
-            <button class="btn-submit" type="submit">Save Changes</button>
+            <button type="submit" class="btn-submit">Save Changes</button>
             <a href="{{ url_for('admin_dashboard') }}" class="btn-cancel">Cancel</a>
         </div>
 

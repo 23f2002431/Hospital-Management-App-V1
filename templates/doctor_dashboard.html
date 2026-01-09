@@ -1,117 +1,235 @@
 {% extends "base.html" %}
-{% block title %}Doctor Dashboard{% endblock %}
+{% block title %}Doctor Dashboard | MedCore{% endblock %}
 
 {% block content %}
-
 <style>
-    .doctor-dashboard-container {
-        max-width: 1000px;
-        margin: 40px auto;
-        padding: 20px;
-    }
+:root {
+    --primary-green: #0d6d3d;
+    --accent-green: #2ecc71;
+    --light-bg: #f4f8fb;
+    --card-bg: #ffffff;
+    --border-color: #dce5ec;
+    --text-dark: #1f2933;
+    --transition-speed: 0.3s;
+}
 
-    .welcome-box {
-        background: #0a660b;
-        color: white;
-        padding: 25px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-        font-size: 22px;
-        font-weight: 600;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
+/* MAIN WRAPPER */
+.doctor-dashboard-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
 
-    .dashboard-section {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.10);
-        margin-bottom: 30px;
-    }
+/* WELCOME BOX */
+.welcome-box {
+    background: var(--primary-green);
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
 
-    .section-title {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: #333;
-    }
+/* APPOINTMENT GRID */
+.appointment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
 
-    .info-box {
-        padding: 15px;
-        border-radius: 10px;
-        background: #f5f7fa;
-        margin-bottom: 15px;
-        border-left: 5px solid #08543b;
-    }
+/* APPOINTMENT CARD */
+.appointment-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
 
-    .no-data {
-        padding: 15px;
-        color: #888;
-        font-style: italic;
-        background: #fafafa;
-        border-radius: 10px;
-        border: 1px dashed #ccc;
-    }
+.appointment-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
 
-    .availability-btn {
-        background: #198754;
-        padding: 12px 20px;
-        display: inline-block;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        margin-top: 10px;
-        text-decoration: none;
-        transition: 0.2s;
-    }
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 25px; /* increase this to add more space */
+    color: #333;
+}
 
-    .availability-btn:hover {
-        background: #146c43;
-    }
+/* CARD HEADER */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 16px;
+}
 
-    /* Table Styling */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
+/* STATUS */
+.status-pending {
+    background: #ffc107;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
 
-    table th, table td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: center;
-    }
+.status-completed {
+    background: var(--accent-green);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
 
-    table th {
-        background: #07490a;
-        color: white;
-        font-weight: 600;
-    }
+.status-cancelled {
+    background: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
 
-    table tr:nth-child(even) {
-        background: #f7f9fc;
-    }
+/* TREATMENT BOX */
+.treatment-box {
+    padding: 8px 12px;
+    background: #f1f9f1;
+    border-radius: 8px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
 
-    input[type="text"] {
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        width: 90%;
-    }
+/* TREATMENT FORM INLINE */
+.treatment-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
 
-    button.assign-btn {
-        padding: 5px 10px;
-        background: #198754;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+.treatment-form input[type="text"] {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+}
 
-    button.assign-btn:hover {
-        background: #146c43;
+.treatment-form button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--primary-green);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.treatment-form button:hover {
+    background: var(--accent-green);
+}
+
+/* DOCTOR AVAILABILITY */
+.availability-btn {
+    background: var(--primary-green);
+    padding: 14px 24px;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.availability-btn:hover {
+    background: var(--accent-green);
+}
+
+/* NO DATA */
+.no-data {
+    padding: 20px;
+    font-style: italic;
+    text-align: center;
+    background: #fafafa;
+    border-radius: 12px;
+    color: #888;
+    border: 1px dashed #ccc;
+}
+
+/* TABLES */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 40px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+table th, table td {
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+table th {
+    background: var(--primary-green);
+    color: white;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+table tr:nth-child(even) {
+    background: #f6f9f6;
+}
+
+table tr:hover {
+    background: #e0f2e9;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    margin: 2px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    transition: 0.2s ease;
+}
+
+.edit-btn { background: var(--primary-green); }
+.edit-btn:hover { background: var(--accent-green); }
+
+.delete-btn { background: #c62828; }
+.delete-btn:hover { background: #a71f1f; }
+
+.blacklist-btn { background: #ff6f00; }
+.blacklist-btn:hover { background: #e65f00; }
+
+@media (max-width: 768px) {
+    .appointment-grid {
+        grid-template-columns: 1fr;
     }
+}
 </style>
 
 <div class="doctor-dashboard-container">
@@ -121,62 +239,51 @@
         Welcome, {{ doctor_name }}
     </div>
 
-    <!-- BOOKED APPOINTMENTS -->
-    <div class="dashboard-section">
-        <div class="section-title">Your Appointments</div>
+    <!-- APPOINTMENTS -->
+    <div class="section-title">Your Appointments</div>
 
-        {% if appointments and appointments|length > 0 %}
-        
-        <table>
-            <tr>
-                <th>SR No</th>
-                <th>Patient Name</th>
-                <th>Date</th>
-                <th>Slot</th>
-                <th>Status</th>
-                <th>Treatment</th> 
-            </tr>
-
-            {% for ap in appointments %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ ap.patient.username }}</td>
-                <td>{{ ap.date }}</td>
-                <td>{{ ap.time }}</td>
-                <td>{{ ap.status }}</td>
-                <td>
-                    {% if ap.treatment_name %}
-                        <strong>{{ ap.treatment_name }}</strong>
+    {% if appointments and appointments|length > 0 %}
+    <div class="appointment-grid">
+        {% for ap in appointments %}
+        <div class="appointment-card">
+            <div class="card-header">
+                <div>{{ ap.patient.username }}</div>
+                <div>
+                    {% if ap.status == 'Pending' %}
+                        <span class="status-pending">{{ ap.status }}</span>
+                    {% elif ap.status == 'Completed' %}
+                        <span class="status-completed">{{ ap.status }}</span>
                     {% else %}
-                        <!-- Form to assign treatment -->
-                        <form method="POST" action="{{ url_for('assign_treatment') }}">
-                            <input type="hidden" name="appointment_id" value="{{ ap.id }}">
-                            <input type="text" name="treatment_name" placeholder="Enter treatment" required>
-                            <br>
-                            <button type="submit" class="assign-btn" style="margin-top:5px;">Assign</button>
-                        </form>
+                        <span class="status-cancelled">{{ ap.status }}</span>
                     {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+                </div>
+            </div>
 
-        {% else %}
-            <div class="no-data">No booked appointments yet.</div>
-        {% endif %}
+            <p><strong>Date:</strong> {{ ap.date }}</p>
+            <p><strong>Slot:</strong> {{ ap.time }}</p>
+            <p><strong>Treatment:</strong></p>
+
+            {% if ap.treatment_name %}
+                <div class="treatment-box">{{ ap.treatment_name }}</div>
+            {% else %}
+                <form class="treatment-form" method="POST" action="{{ url_for('assign_treatment') }}">
+                    <input type="hidden" name="appointment_id" value="{{ ap.id }}">
+                    <input type="text" name="treatment_name" placeholder="Enter treatment" required>
+                    <button type="submit">Assign</button>
+                </form>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
+    {% else %}
+        <div class="no-data">No booked appointments yet.</div>
+    {% endif %}
 
-    <!-- PROVIDE AVAILABILITY -->
-    <div class="dashboard-section">
-        <div class="section-title">Doctor Availability</div>
-
-        <p>You can update the days and timings you are available for appointments.</p>
-
-        <a href="{{url_for('doctor_availability')}}" class="availability-btn">
-            + Provide / Update Availability
-        </a>
-    </div>
+    <!-- DOCTOR AVAILABILITY -->
+    
+    <a href="{{url_for('doctor_availability')}}" class="availability-btn">
+        + Provide / Update Availability
+    </a>
 
 </div>
-
 {% endblock %}

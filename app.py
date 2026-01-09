@@ -13,7 +13,7 @@ app.secret_key = "123"    #thisnis for secerete key
 
 
 #database configuration
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///site.db'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:rigveda26@localhost:5432/hms_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 
@@ -201,7 +201,7 @@ def edit_profile():
 
         db.session.commit()
         flash("Profile information updated successfully", "success")
-        return redirect(url_for('edit_profile'))
+        return redirect(url_for('patient_dashboard'))
 
     return render_template("edit_profile.html", patient=patient)
 
@@ -264,20 +264,20 @@ def create_doctor():
         password=request.form.get('password')
         email=request.form.get('email')
         department_id=request.form.get('department_id')
-        experience = request.form.get('experience')          # NEW FIELD
+        experience = request.form.get('experience')         
         qualifications = request.form.get('qualifications') 
 
         reg_dpt=User.query.filter_by(username=name).first()
         if reg_dpt:
             flash('Doctor already exists','error')
-            return render_template('admin_dashboard.html', departments=departments)
+            return redirect(url_for('create_doctor'))
             
 #flash is left to be added in the frontend
         new_dcot=User(username=name,password=password,email=email,role='doctor',department_id=department_id,experience=experience,qualifications=qualifications)
         db.session.add(new_dcot)
         db.session.commit()
         flash('You added a new doctor','success')
-        return render_template('admin_dashboard.html', departments=departments)
+        return redirect(url_for('admin_dashboard'))
         
 
     return render_template('create_doctor.html',departments=departments)
@@ -294,6 +294,8 @@ def blacklist(user_id):
     user=User.query.filter_by(id=user_id).first()
     user.blacklisted=True
     db.session.commit()
+    flash("Patient has been blacklisted.", "danger")
+
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin_dashboard/remove_blacklist/<int:user_id>')
@@ -301,6 +303,8 @@ def remove_blacklist(user_id):
     user=User.query.filter_by(id=user_id).first()
     user.blacklisted=False
     db.session.commit()
+    flash("Patient removed from blacklist.", "success")
+
     return redirect(url_for('admin_dashboard'))
 
 
@@ -316,7 +320,7 @@ def edit_doctor(doctor_id):
         doctor.experience = request.form.get('experience')
         doctor.qualifications = request.form.get('qualifications')
         db.session.commit()
-        flash('Doctor details are updated sucessfully','success')
+        flash('Doctor details updated successfully','success')
         return redirect(url_for('admin_dashboard'))
     
     return render_template('edit_doctor.html',doctor=doctor,departments=departments)
@@ -324,7 +328,7 @@ def edit_doctor(doctor_id):
 
 
 
-#3blacklist and delete doctor ==chatgpt okayyyyyyy
+#3blacklist and delete doctor == okayyyyyyy
 @app.route('/admin_dashboard/toggle_blacklist_doctor/<int:doctor_id>')
 def toggle_blacklist_doctor(doctor_id):
     doctor = User.query.get_or_404(doctor_id)
@@ -333,9 +337,9 @@ def toggle_blacklist_doctor(doctor_id):
     db.session.commit()
 
     if doctor.blacklisted:
-        flash("Doctor has been blacklisted.")
+        flash("Doctor has been blacklisted.","danger")
     else:
-        flash("Doctor removed from blacklist.")
+        flash("Doctor removed from blacklist.","success")
 
     return redirect(url_for('admin_dashboard'))
 
@@ -343,6 +347,12 @@ def toggle_blacklist_doctor(doctor_id):
 @app.route('/admin_dashboard/delete_doctor/<int:doctor_id>')
 def delete_doctor(doctor_id):
     doctor = User.query.get_or_404(doctor_id)
+
+    appointments = Appointment.query.filter_by(doctor_id=doctor_id).first()
+    if appointments:
+        flash("Cannot delete doctor. Existing appointments found.", "error")
+        return redirect(url_for('admin_dashboard'))
+    
     db.session.delete(doctor)
     db.session.commit()
     flash("Doctor deleted successfully.")
@@ -357,41 +367,65 @@ def add_department():
         dsc=request.form.get('description')
         reg_dpt=Department.query.filter_by(department_name=depar_name).first() 
         if reg_dpt:
-            flash('department already exists')
+            flash('Department already exists')
             return redirect(url_for('add_department'))     
           
         new_dpt=Department(department_name=depar_name,description=dsc)
         db.session.add(new_dpt)
         db.session.commit()
-        flash('hey you added a new department')
+        flash('New department added sucessfully.')
         return redirect(url_for('admin_dashboard'))
                         
     return render_template('add_department.html')
 
 
-@app.route('/doctor_dashboard/availability',methods=['GET','POST'])
+@app.route('/doctor_dashboard/availability', methods=['GET', 'POST'])
 def doctor_availability():
-    doctor_id=session['id']
-    dates=next_n_dates()
-    existing=DoctorAvailability.query.filter(DoctorAvailability.doctor_id==doctor_id,DoctorAvailability.date.in_(dates)).all()
+    doctor_id = session['id']
 
-    existing_map={a.date: a for a in existing}
-    print(existing_map)
+    # Step 1: get next dates
+    dates = next_n_dates()  # list of date objects
 
-    created=False
+    # Step 2: fetch existing availability
+    existing = DoctorAvailability.query.filter(
+        DoctorAvailability.doctor_id == doctor_id,
+        DoctorAvailability.date.in_(dates)
+    ).all()
+
+    # Step 3: map existing rows
+    existing_map = {a.date: a for a in existing}
+
+    # Step 4: create missing rows
+    created = False
     for d in dates:
         if d not in existing_map:
-            new_row=DoctorAvailability(
-                doctor_id=doctor_id,date=d,morning=False,evening=False)
+            new_row = DoctorAvailability(
+                doctor_id=doctor_id,
+                date=d,
+                morning=False,
+                evening=False
+            )
             db.session.add(new_row)
-            created=True
+            created = True
+
     if created:
         db.session.commit()
 
-    availability_list=[existing_map[d] for d in dates]
+        #  fetch again after commit
+        existing = DoctorAvailability.query.filter(
+            DoctorAvailability.doctor_id == doctor_id,
+            DoctorAvailability.date.in_(dates)
+        ).all()
 
-    return render_template("doctor_availability.html",availabilities=availability_list)
+        existing_map = {a.date: a for a in existing}
 
+    # Step 5: SAFE access (NO KeyError)
+    availability_list = [existing_map.get(d) for d in dates]
+
+    return render_template(
+        "doctor_availability.html",
+        availabilities=availability_list
+    )
 
 @app.route('/doctor_dashboard/toggle_availability',methods=['POST'])
 def toggle_availability():
@@ -420,7 +454,17 @@ def toggle_availability():
 @app.route('/book_appointment/<int:doctor_id>',methods=['GET'])
 def book_appointment(doctor_id):
     patient_id=session.get("id")
+    patient = User.query.get(patient_id)
+    if patient.blacklisted:
+        flash("You are restricted from booking appointments.", "danger")
+        return redirect(url_for('patient_dashboard'))
+
+
     doctor=User.query.get(doctor_id)
+    if doctor.blacklisted:
+        flash("This doctor is currently unavailable for booking.", "danger")
+        return redirect(url_for('patient_dashboard'))
+
     dates=next_n_dates()
     date_strings=[str(d) for d in dates]
     availability=DoctorAvailability.query.filter(DoctorAvailability.doctor_id==doctor_id,DoctorAvailability.date.in_(date_strings)).all()
@@ -437,9 +481,22 @@ def confirm_booking():
     if not patient_id:
         return redirect(url_for('sign_in'))
     
+
+    patient = User.query.get(patient_id)
+    if patient.blacklisted:
+        flash("Your account is restricted. Appointment booking is disabled.", "danger")
+        return redirect(url_for('patient_dashboard'))
+
     doctor_id=request.form.get("doctor_id")
     date=request.form.get("date")
     slot=request.form.get("slot")
+
+    doctor = User.query.get(doctor_id)
+
+    if doctor.blacklisted:
+        flash("This doctor is no longer accepting appointments.", "danger")
+        return redirect(url_for('patient_dashboard'))
+
 
     #prevent double double booking
     existing=Appointment.query.filter_by(
@@ -451,10 +508,10 @@ def confirm_booking():
     ).first()
 
     if existing:
-        flash("you already booked this slot,","warning")
+        flash("You already booked this slot,","warning")
         return redirect(url_for('book_appointment',doctor_id=doctor_id))
     
-    #make an appoinytment
+    #make an appointment
 
     appt=Appointment(
         date=date,
@@ -478,7 +535,7 @@ def confirm_booking():
 
     db.session.commit()
 
-    flash("appointment booked sucessfully","success")
+    flash("Appointment booked sucessfully","success")
     return redirect(url_for('patient_dashboard'))
 
 # @app.route('/cancel_appointment/<int:appointment_id>')
@@ -578,18 +635,18 @@ def assign_treatment():
     db.session.commit()
     flash("Treatment assigned and appointment marked as completed.", "success")
     return redirect(url_for('doctor_dashboard'))
-
+from werkzeug.security import generate_password_hash
 #run the app and create a database
 if __name__=='__main__':
     with app.app_context():   ##needed for db operations
 
         db.create_all()      #create the database and the tables
-        existing_admin=User.query.filter_by(username="admin").first()
+        existing_admin=User.query.filter_by(role="admin").first()
 
         if not existing_admin:
             admin_db=User(
                 username="admin",
-                password="admin",
+                password=generate_password_hash("admin"),
                 email="rigveda26@gmail.com",
                 role="admin"
             )
