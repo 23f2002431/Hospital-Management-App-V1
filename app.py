@@ -108,10 +108,6 @@ class DoctorAvailability(db.Model):
     
 
 
-@app.route("/init-db")
-def init_db():
-    init_db_and_admin()
-    return "Database initialized"
 
 
 @app.route('/')
