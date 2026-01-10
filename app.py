@@ -3,6 +3,8 @@ from flask import render_template,request,redirect,url_for,session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime,timedelta,date
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import inspect
 
 
 app= Flask(__name__)
@@ -114,47 +116,53 @@ class DoctorAvailability(db.Model):
 def index():
     return render_template('index.html')
 
-@app.route('/registration',methods=["POST","GET"])
+@app.route('/registration', methods=["POST", "GET"])
 def registration():
-    if request.method=="POST":
-        name=request.form['username']
-        email=request.form['email']
-        password=request.form['password']
-        
-        user=User.query.filter_by(username=name,email=email).first()
+    if request.method == "POST":
+        name = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        user = User.query.filter_by(username=name, email=email).first()
         if user:
             return redirect(url_for('login'))
-        new_user=User(username=name,email=email,password=password,role="patient")
+
+        # ✅ HASH PASSWORD
+        hashed_password = generate_password_hash(password)
+
+        new_user = User(
+            username=name,
+            email=email,
+            password=hashed_password,   # ✅ store hashed
+            role="patient"
+        )
         db.session.add(new_user)
         db.session.commit()
- 
+
         return redirect(url_for('login'))
+
     return render_template('registration.html')
 
-from werkzeug.security import check_password_hash
-
-@app.route('/login',methods=["POST","GET"])
+@app.route('/login', methods=["POST", "GET"])
 def login():
-    if request.method=="POST":
-        name=request.form['frontend_name']
-        password=request.form['frontend_password']
+    if request.method == "POST":
+        name = request.form['frontend_name']
+        password = request.form['frontend_password']
 
-        # Only query by username/email
         user = User.query.filter_by(username=name).first()
 
         if not user:
             return render_template('login.html', error_message="You are a new user, please register first")
 
-        # Check hashed password
+        # ✅ CHECK HASHED PASSWORD
         if not check_password_hash(user.password, password):
             return render_template('login.html', error_message="Invalid credentials")
 
-        # Set session
+        # ✅ SESSION SET
         session['name'] = user.username
         session['id'] = user.id
         session['role'] = user.role
 
-        # Redirect based on role
         if user.role == "admin":
             return redirect(url_for('admin_dashboard'))
         elif user.role == "doctor":
@@ -644,9 +652,6 @@ def assign_treatment():
     db.session.commit()
     flash("Treatment assigned and appointment marked as completed.", "success")
     return redirect(url_for('doctor_dashboard'))
-from werkzeug.security import generate_password_hash
-from werkzeug.security import check_password_hash
-from sqlalchemy import inspect
 
 @app.route("/init-db")
 def init_db():
