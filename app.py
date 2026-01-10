@@ -644,15 +644,18 @@ def assign_treatment():
     return redirect(url_for('doctor_dashboard'))
 from werkzeug.security import generate_password_hash
 
-
-
-
-def init_db_and_admin():
+@app.route("/init-db")
+def init_db():
     with app.app_context():
         db.create_all()
 
-        existing_admin = User.query.filter_by(role="admin").first()
-        if not existing_admin:
+        from sqlalchemy import inspect
+        inspector = inspect(db.engine)
+
+        if "users" not in inspector.get_table_names():
+            return "Users table not created", 500
+
+        if not User.query.filter_by(role="admin").first():
             admin = User(
                 username="admin",
                 email="rigveda26@gmail.com",
@@ -662,8 +665,5 @@ def init_db_and_admin():
             db.session.add(admin)
             db.session.commit()
 
-if __name__ == "__main__":
-    init_db_and_admin()
-    app.run(debug=False)
-
+    return "Database initialized successfully"
 
