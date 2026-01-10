@@ -131,31 +131,37 @@ def registration():
         return redirect(url_for('login'))
     return render_template('registration.html')
 
+from werkzeug.security import check_password_hash
+
 @app.route('/login',methods=["POST","GET"])
 def login():
     if request.method=="POST":
         name=request.form['frontend_name']
         password=request.form['frontend_password']
 
-        user=User.query.filter_by(username=name,password=password).first()
-        if user and user.role=="patient":
-            session['name']=user.username
-            session['id']=user.id
-            session['role']=user.role
-            return redirect(url_for('patient_dashboard'))
-        
-        elif user and user.role=="doctor":
-            session['name']=user.username
-            session['id']=user.id
-            session['role']=user.role
-            return redirect(url_for('doctor_dashboard'))
-        
-        elif user and user.role=="admin":
-            session['name']=user.username
-            session['id']=user.id
-            session['role']=user.role
+        # Only query by username/email
+        user = User.query.filter_by(username=name).first()
+
+        if not user:
+            return render_template('login.html', error_message="You are a new user, please register first")
+
+        # Check hashed password
+        if not check_password_hash(user.password, password):
+            return render_template('login.html', error_message="Invalid credentials")
+
+        # Set session
+        session['name'] = user.username
+        session['id'] = user.id
+        session['role'] = user.role
+
+        # Redirect based on role
+        if user.role == "admin":
             return redirect(url_for('admin_dashboard'))
-        return render_template('login.html',error_message="You are new user please register first")
+        elif user.role == "doctor":
+            return redirect(url_for('doctor_dashboard'))
+        elif user.role == "patient":
+            return redirect(url_for('patient_dashboard'))
+
     return render_template('login.html')
 
 @app.route('/logout')
@@ -639,27 +645,30 @@ def assign_treatment():
     flash("Treatment assigned and appointment marked as completed.", "success")
     return redirect(url_for('doctor_dashboard'))
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
+from sqlalchemy import inspect
 
 @app.route("/init-db")
 def init_db():
     with app.app_context():
+        # 1️⃣ Create all tables if they don't exist
         db.create_all()
 
-        from sqlalchemy import inspect
+        # 2️⃣ Use inspector to check tables (optional)
         inspector = inspect(db.engine)
-
         if "users" not in inspector.get_table_names():
             return "Users table not created", 500
 
-        if not User.query.filter_by(role="admin").first():
+        # 3️⃣ Create admin if not exists
+        admin_user = User.query.filter_by(role="admin").first()
+        if not admin_user:
             admin = User(
                 username="admin",
                 email="rigveda26@gmail.com",
-                password=generate_password_hash("admin"),
+                password=generate_password_hash("admin"),  # hashed password
                 role="admin"
             )
             db.session.add(admin)
             db.session.commit()
 
     return "Database initialized successfully"
-
