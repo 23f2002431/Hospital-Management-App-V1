@@ -108,6 +108,10 @@ class DoctorAvailability(db.Model):
     
 
 
+@app.route("/init-db")
+def init_db():
+    init_db_and_admin()
+    return "Database initialized"
 
 
 @app.route('/')
@@ -639,22 +643,27 @@ def assign_treatment():
     flash("Treatment assigned and appointment marked as completed.", "success")
     return redirect(url_for('doctor_dashboard'))
 from werkzeug.security import generate_password_hash
-#run the app and create a database
-if __name__=='__main__':
-    with app.app_context():   ##needed for db operations
 
-        db.create_all()      #create the database and the tables
-        existing_admin=User.query.filter_by(role="admin").first()
 
+
+
+def init_db_and_admin():
+    with app.app_context():
+        db.create_all()
+
+        existing_admin = User.query.filter_by(role="admin").first()
         if not existing_admin:
-            admin_db=User(
+            admin = User(
                 username="admin",
-                password=generate_password_hash("admin"),
                 email="rigveda26@gmail.com",
+                password=generate_password_hash("admin"),
                 role="admin"
             )
-            db.session.add(admin_db)
+            db.session.add(admin)
             db.session.commit()
+
+if __name__ == "__main__":
+    init_db_and_admin()
     app.run(debug=False)
 
 
