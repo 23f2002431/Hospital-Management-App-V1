@@ -1,31 +1,30 @@
-from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, flash
 from flask import render_template,request,redirect,url_for,session
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime,timedelta,date
+import os
 
 
 app= Flask(__name__)
 
-from flask import Flask
-app = Flask(__name__)
 
-app.secret_key = "123"    #thisnis for secerete key
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")   #thisnis for secerete key
 
+# Database configuration
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-#database configuration
-import os
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL is not set")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+# Fix for Render postgres:// issue
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-
-
-
-#initialize the database
+# Initialize DB
 db = SQLAlchemy(app)
-
-
 
 def next_n_dates():
     today=date.today()
