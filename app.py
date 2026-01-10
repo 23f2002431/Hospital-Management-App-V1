@@ -150,6 +150,8 @@ def login():
         password = request.form['frontend_password']
 
         user = User.query.filter_by(username=name).first()
+        if user.blacklisted:
+            return render_template('login.html', error_message="Your account is restricted")
 
         if not user:
             return render_template('login.html', error_message="You are a new user, please register first")
@@ -290,7 +292,18 @@ def create_doctor():
             return redirect(url_for('create_doctor'))
             
 #flash is left to be added in the frontend
-        new_dcot=User(username=name,password=password,email=email,role='doctor',department_id=department_id,experience=experience,qualifications=qualifications)
+        hashed_password = generate_password_hash(password)
+
+        new_dcot = User(
+        username=name,
+        password=hashed_password,
+        email=email,
+        role='doctor',
+        department_id=department_id,
+        experience=experience,
+        qualifications=qualifications
+        )
+
         db.session.add(new_dcot)
         db.session.commit()
         flash('You added a new doctor','success')
