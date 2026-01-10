@@ -13,7 +13,13 @@ app.secret_key = "123"    #thisnis for secerete key
 
 
 #database configuration
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:rigveda26@localhost:5432/hms_db'
+import os
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:rigveda26@localhost:5432/hms_db"
+)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 
