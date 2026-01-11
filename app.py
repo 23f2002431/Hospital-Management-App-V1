@@ -150,9 +150,7 @@ def login():
         password = request.form['frontend_password']
 
         user = User.query.filter_by(username=name).first()
-        if user.blacklisted:
-            return render_template('login.html', error_message="Your account is restricted")
-
+        
         if not user:
             return render_template('login.html', error_message="You are a new user, please register first")
 
