@@ -1,298 +1,324 @@
 {% extends "base.html" %}
-{% block title %}MedCore | Intelligent Healthcare{% endblock %}
+{% block title %}MedCore | Intelligent Healthcare Platform{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-/* RESET */
-.main-container {
-    padding: 0 !important;
-}
+    :root {
+        --primary: #10b981; 
+        --primary-hover: #0ea171;
+        --secondary: #0ea5e9; 
+        --dark-navy: #1e293b;
+        --slate-navy: #0f172a;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --radius: 16px;
+    }
 
-/* ---------- HERO ---------- */
-.hero {
-    height: 100vh;
-    background:
-        linear-gradient(rgba(8,30,50,0.75), rgba(13,109,61,0.75)),
-        url('https://static.vecteezy.com/system/resources/thumbnails/070/638/150/small/doctor-interacting-with-digital-interface-healthcare-technology-concept-featuring-virtual-screen-data-analysis-and-modern-medicine-photo.jpeg')
-        center/cover no-repeat;
+    /* RESET & BASE */
+    .main-container { padding: 0 !important; }
+    
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
+        line-height: 1.6;
+    }
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    /* ---------- HERO SECTION (GLASSMORPHISM) ---------- */
+    .hero {
+        height: 100vh;
+        background: 
+            linear-gradient(rgba(15, 23, 42, 0.8), rgba(16, 185, 129, 0.4)),
+            url('https://static.vecteezy.com/system/resources/thumbnails/070/638/150/small/doctor-interacting-with-digital-interface-healthcare-technology-concept-featuring-virtual-screen-data-analysis-and-modern-medicine-photo.jpeg')
+            center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;
+    }
 
-.hero-box {
-    max-width: 780px;
-    padding: 55px;
-    text-align: center;
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(12px);
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.25);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-}
-
-.hero-box h1 {
-    font-size: 44px;
-    color: #ffffff;
-    margin-bottom: 18px;
-}
-
-.hero-box h1 span {
-    color: #2ecc71;
-}
-
-.hero-box p {
-    font-size: 18px;
-    color: #eaf6f0;
-    line-height: 1.7;
-    margin-bottom: 36px;
-}
-
-/* 🔹 HERO ACTION BUTTONS (ADDED ONLY) */
-.hero-actions {
-    display: flex;
-    justify-content: center;
-    gap: 22px;
-    flex-wrap: wrap;
-}
-
-.hero-actions a {
-    padding: 14px 34px;
-    border-radius: 9px;
-    font-weight: 600;
-    font-size: 16px;
-    text-decoration: none;
-    color: white;
-    background: linear-gradient(90deg,#0d6d3d,#2ecc71);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.hero-actions a.secondary {
-    background: transparent;
-    border: 2px solid #2ecc71;
-    color: #ffffff;
-}
-
-.hero-actions a:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.45);
-}
-
-/* ---------- COMMON SECTION ---------- */
-.section {
-    padding: 90px 20px;
-    background: #f5faf7;
-}
-
-.section.dark {
-    background:
-        linear-gradient(rgba(8,30,50,0.85), rgba(8,30,50,0.85)),
-        url('https://static.vecteezy.com/system/resources/thumbnails/070/638/150/small/doctor-interacting-with-digital-interface-healthcare-technology-concept-featuring-virtual-screen-data-analysis-and-modern-medicine-photo.jpeg')
-        center/cover no-repeat;
-    color: #ffffff;
-}
-
-.container {
-    max-width: 1150px;
-    margin: auto;
-}
-
-/* ---------- ZOOP ANIMATION ---------- */
-.animate {
-    opacity: 0;
-    transform: translateX(80px);
-    transition: all 0.8s ease-out;
-}
-
-.animate.left {
-    transform: translateX(-80px);
-}
-
-.animate.show {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* ---------- CONTENT ROW ---------- */
-.content-row {
-    display: flex;
-    align-items: center;
-    gap: 60px;
-    margin-bottom: 80px;
-}
-
-.content-row.reverse {
-    flex-direction: row-reverse;
-}
-
-.text-box h2 {
-    font-size: 34px;
-    color: #0d6d3d;
-    margin-bottom: 16px;
-}
-
-.section.dark .text-box h2 {
-    color: #2ecc71;
-}
-
-.text-box p {
-    font-size: 16px;
-    line-height: 1.7;
-    color: #444;
-}
-
-.section.dark .text-box p {
-    color: #e0f2ea;
-}
-
-/* ---------- CTA ---------- */
-.cta {
-    text-align: center;
-}
-
-.cta h2 {
-    font-size: 36px;
-    color: #0d6d3d;
-    margin-bottom: 18px;
-}
-
-.cta p {
-    font-size: 17px;
-    margin-bottom: 35px;
-}
-
-.cta a {
-    display: inline-block;
-    padding: 16px 38px;
-    background: linear-gradient(90deg,#0d6d3d,#2ecc71);
-    color: #ffffff;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 12px 26px rgba(0,0,0,0.3);
-    transition: transform 0.25s ease;
-}
-
-.cta a:hover {
-    transform: translateY(-3px);
-}
-
-/* ---------- RESPONSIVE ---------- */
-@media (max-width: 900px) {
-    .content-row,
-    .content-row.reverse {
-        flex-direction: column;
+    .hero-box {
+        max-width: 850px;
+        padding: 60px;
         text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
 
     .hero-box h1 {
-        font-size: 32px;
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
     }
-}
+
+    .hero-box h1 span {
+        color: var(--primary);
+    }
+
+    .hero-box p {
+        font-size: 1.2rem;
+        color: #e2e8f0;
+        margin-bottom: 40px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .hero-actions a {
+        padding: 16px 36px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .hero-actions a.primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .hero-actions a.secondary {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        color: #ffffff;
+    }
+
+    .hero-actions a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-actions a.primary:hover {
+        background: var(--primary-hover);
+    }
+
+    /* ---------- CONTENT SECTIONS ---------- */
+    .section {
+        padding: 50px 20px;
+        background: var(--white);
+    }
+
+    .section.alt {
+        background: #f1f5f9;
+    }
+
+    .container {
+        max-width: 1150px;
+        margin: auto;
+    }
+
+    .content-row {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+        margin-bottom: 100px;
+    }
+
+    .content-row.reverse {
+        flex-direction: row-reverse;
+    }
+
+    .text-box { flex: 1; }
+
+    .text-box h2 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: var(--slate-navy);
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .text-box p {
+        font-size: 1.1rem;
+        color: var(--sidebar-text);
+        margin-bottom: 25px;
+    }
+
+    .feature-tag {
+        display: inline-block;
+        padding: 6px 14px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: 20px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    /* ---------- CTA SECTION ---------- */
+    .cta-section {
+        padding: 80px 20px;
+        text-align: center;
+        background: var(--slate-navy);
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .cta-section p {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+    }
+
+    .cta-section .btn-main {
+        padding: 18px 48px;
+        background: var(--primary);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 700;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .cta-section .btn-main:hover {
+        background: var(--primary-hover);
+        transform: scale(1.05);
+    }
+
+    /* ---------- ANIMATIONS ---------- */
+    .animate {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .animate.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 900px) {
+        .content-row, .content-row.reverse {
+            flex-direction: column;
+            text-align: center;
+            gap: 40px;
+        }
+
+        .hero-box h1 { font-size: 2.5rem; }
+        .hero-box { padding: 40px 20px; }
+    }
 </style>
 
-<!-- HERO -->
 <section class="hero">
-    <div class="hero-box">
-        
+    <div class="hero-box animate">
+        <h1>Med<span>Core</span></h1>
         <p>
-            <h1>Welcome to <span>MedCore</span></h1>
-        <p>
-            A secure and intelligent hospital management platform designed
-            to simplify patient registration, appointment scheduling,
-            and healthcare operations with efficiency and reliability.
-        </p>
+            Experience the next generation of intelligent hospital management. 
+            A secure, role-based platform designed to streamline clinical workflows, 
+            automate scheduling, and enhance patient care.
         </p>
 
-        <!-- ✅ ADDED BUTTONS ONLY -->
         <div class="hero-actions">
-            <a href="{{ url_for('registration') }}">Get Started</a>
-            <a href="{{ url_for('login') }}" >Login</a>
+            <a href="{{ url_for('registration') }}" class="primary">Get Started Now</a>
+            <a href="{{ url_for('login') }}" class="secondary">Login</a>
         </div>
     </div>
 </section>
 
-<!-- SECTION 1 -->
 <section class="section">
     <div class="container">
         <div class="content-row">
-            <div class="text-box animate left">
-                <h2>Unified Hospital Operations</h2>
+            <div class="text-box animate">
+                <span class="feature-tag">Efficiency</span>
+                <h2>Unified Clinical Operations</h2>
                 <p>
-                    MedCore brings patient records, doctor availability,
-                    departments, and appointments together into one
-                    reliable and secure system.
+                    MedCore Pro centralizes patient records, practitioner schedules, and 
+                    departmental oversight into one high-performance interface. 
+                    Say goodbye to fragmented data and hello to operational clarity.
                 </p>
+            </div>
+            <div class="text-box animate" style="text-align: center;">
+                <i class="fa-solid fa-microchip" style="font-size: 8rem; color: #f1f5f9;"></i>
             </div>
         </div>
 
         <div class="content-row reverse">
             <div class="text-box animate">
-                <h2>Controlled & Secure Access</h2>
+                <span class="feature-tag">Security</span>
+                <h2>Secure Role-Based Access</h2>
                 <p>
-                    Role-based access ensures administrators, doctors,
-                    and patients interact only with what they are
-                    authorized to manage.
+                    Built with rigorous security standards, our platform ensures that 
+                    Administrators, Doctors, and Patients access only the data they 
+                    are authorized to manage. Your data integrity is our priority.
                 </p>
+            </div>
+            <div class="text-box animate" style="text-align: center;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 8rem; color: #f1f5f9;"></i>
             </div>
         </div>
     </div>
 </section>
 
-<!-- SECTION 2 -->
-<section class="section dark">
+<section class="section alt">
     <div class="container">
         <div class="content-row">
-            <div class="text-box animate left">
-                <h2>Smart Appointment Flow</h2>
+            <div class="text-box animate">
+                <span class="feature-tag">Availability</span>
+                <h2>Real-Time Scheduling</h2>
                 <p>
-                    Real-time scheduling, availability tracking,
-                    and booking validation reduce errors
-                    and improve patient experience.
+                    Our smart booking engine validates doctor availability in real-time, 
+                    eliminating double-bookings and reducing patient wait times. 
+                    Manage slots, sessions, and treatments with a single click.
                 </p>
             </div>
-        </div>
-
-        <div class="content-row reverse">
-            <div class="text-box animate">
-                <h2>Designed for Real Deployment</h2>
-                <p>
-                    Built using scalable architecture, structured
-                    database design, and production-ready workflows.
-                </p>
+            <div class="text-box animate" style="text-align: center;">
+                <i class="fa-solid fa-calendar-check" style="font-size: 8rem; color: #cbd5e1;"></i>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA -->
-<section class="section">
-    <div class="container cta animate">
-        <h2>Start using MedCore today</h2>
+<section class="cta-section">
+    <div class="container animate">
+        <h2>Ready to transform your practice?</h2>
         <p>
-            A professional healthcare solution built for clarity,
-            reliability, and growth.
+            Join the medical professionals who trust MedCore for 
+            reliable, scalable, and modern healthcare operations.
         </p>
-        <a href="{{ url_for('registration') }}">Register Now</a>
+        <a href="{{ url_for('registration') }}" class="btn-main">Create Your Account</a>
     </div>
 </section>
 
 <script>
-const animatedElements = document.querySelectorAll('.animate');
+    const animatedElements = document.querySelectorAll('.animate');
 
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        }
-    });
-}, { threshold: 0.2 });
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            }
+        });
+    }, { threshold: 0.1 });
 
-animatedElements.forEach(el => observer.observe(el));
+    animatedElements.forEach(el => observer.observe(el));
 </script>
 
 {% endblock %}

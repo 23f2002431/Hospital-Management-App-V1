@@ -1,187 +1,224 @@
 {% extends "base.html" %}
 
-{% block title %}Add Department{% endblock %}
+{% block title %}Add Department | MedCore Pro{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    :root {
+        --primary: #0f7e59; /* Mint Green */
+        --primary-light: #ecfdf5;
+        --secondary: #0ea5e9; /* Blue */
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+        --radius: 16px;
+    }
 
-:root {
-    --primary-blue: #0a2540;
-    --primary-green: #0d6d3d;
-    --primary-green-light: #1fa971;
-    --border-color: #dce5ec;
-    --bg-gradient-start: #e3f2fd;
-    --bg-gradient-end: #e8f5e9;
-    --error-red: #c62828;
-}
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
+    }
 
-/* FULL SCREEN BACKGROUND */
-body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-    padding: 0 !important;
-}
+    /* CENTERED CONTAINER */
+    .form-wrapper {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
 
-/* CENTERED CARD */
-.form-wrapper {
-    min-height: calc(100vh - 140px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    .form-card {
+        background: var(--white);
+        max-width: 500px;
+        width: 100%;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        position: relative;
+    }
 
-.form-card {
-    background: #ffffff;
-    max-width: 450px;
-    width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-}
+    /* Top Accent Line */
+    .form-card::before {
+        content: ""; 
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 5px; 
+        background: var(--primary);
+    }
 
-/* HEADER */
-.form-header {
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
-    color: white;
-    text-align: center;
-    padding: 28px 20px;
-}
-.form-header h2 {
-    margin: 0;
-    font-size: 26px;
-    font-weight: 700;
-}
-.form-header p {
-    margin-top: 6px;
-    font-size: 14px;
-    opacity: 0.9;
-}
+    /* HEADER */
+    .form-header {
+        padding: 40px 32px 10px 32px;
+        text-align: left;
+    }
 
-/* BODY */
-.form-body {
-    padding: 28px 24px;
-}
+    .form-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-navy);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-.form-body label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: var(--primary-blue);
-    font-size: 14px;
-}
+    .form-header p {
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: var(--sidebar-text);
+    }
 
-.form-body input,
-.form-body textarea {
-    width: 100%;
-    padding: 11px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    font-size: 15px;
-    margin-bottom: 16px;
-    background: #f9fdf9;
-    transition: 0.3s;
-}
-.form-body input:focus,
-.form-body textarea:focus {
-    outline: none;
-    border-color: var(--primary-green);
-    box-shadow: 0 0 0 2px rgba(13, 109, 61, 0.15);
-}
-textarea { resize: none; }
+    /* BODY */
+    .form-body {
+        padding: 20px 32px 40px 32px;
+    }
 
-/* SUBMIT BUTTON */
-.submit-btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--primary-green);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-}
-.submit-btn:hover {
-    background: var(--primary-green-light);
-}
+    .form-group {
+        margin-bottom: 20px;
+    }
 
-/* BACK LINK */
-.back-link {
-    display: block;
-    text-align: center;
-    margin-top: 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--primary-green);
-    text-decoration: none;
-}
-.back-link:hover {
-    text-decoration: underline;
-}
+    .form-body label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark-navy);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-/* FLASH MESSAGES */
-.flash {
-    padding: 12px 18px;
-    margin-bottom: 15px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-}
-.flash.success {
-    background: #d4edda;
-    color: #155724;
-    border-left: 4px solid #28a745;
-}
-.flash.error {
-    background: #fdecea;
-    color: #721c24;
-    border-left: 4px solid #c62828;
-}
-.flash.info {
-    background: #d1ecf1;
-    color: #0c5460;
-    border-left: 4px solid #17a2b8;
-}
-.flash.warning {
-    background: #fff3cd;
-    color: #856404;
-    border-left: 4px solid #ffc107;
-}
+    .form-body input,
+    .form-body textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        font-size: 0.95rem;
+        background: #fdfdfd;
+        transition: all 0.2s ease;
+        box-sizing: border-box; 
+    }
+
+    .form-body input:focus,
+    .form-body textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        background: #fff;
+    }
+
+    textarea { resize: none; }
+
+    /* SUBMIT BUTTON */
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: transform 0.2s, background 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .submit-btn:hover {
+        background: #0ea171;
+        transform: translateY(-1px);
+    }
+
+    /* BACK LINK */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 24px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--sidebar-text);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--primary);
+    }
+
+    /* FLASH MESSAGES */
+    .flash {
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .flash.success { background: #dcfce7; color: #15803d; border: 1px solid #bdf0cc; }
+    .flash.error { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 </style>
 
 <div class="form-wrapper">
     <div class="form-card">
         <div class="form-header">
-            <h2>Add Department</h2>
-            <p>Enter department details</p>
+            <h2><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> Add Department</h2>
+            <p>Register a new hospital department into the system</p>
         </div>
+        
         <div class="form-body">
-
-            <!-- FLASH MESSAGES -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
+                        <div class="flash {{ 'success' if category == 'success' else 'error' }}">
+                            <i class="fa-solid {{ 'fa-circle-check' if category == 'success' else 'fa-circle-exclamation' }}"></i>
+                            {{ message }}
+                        </div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
 
             <form action="{{ url_for('add_department') }}" method="POST">
-                <label for="department_name">Department Name</label>
-                <input type="text" id="department_name" name="department_name" placeholder="Enter department name" required>
+                <div class="form-group">
+                    <label for="department_name">Department Name</label>
+                    <input type="text" id="department_name" name="department_name" placeholder="e.g. Cardiology" required>
+                </div>
 
-                <label for="description">Description</label>
-                <textarea id="description" name="description" rows="4" placeholder="Enter department description" required></textarea>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Briefly describe the department's focus..." required></textarea>
+                </div>
 
-                <button type="submit" class="submit-btn">Save Department</button>
+                <button type="submit" class="submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Department
+                </button>
             </form>
 
-            <a href="{{ url_for('admin_dashboard') }}" class="back-link">&larr; Back to Dashboard</a>
+            <div style="text-align: center;">
+                <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

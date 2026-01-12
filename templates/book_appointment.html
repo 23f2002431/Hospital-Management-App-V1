@@ -1,152 +1,222 @@
 {% extends "base.html" %}
-{% block title %}Book Appointment with  {{ doctor.username }}{% endblock %}
+{% block title %}Book Appointment with {{ doctor.username }} | MedCore Pro{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-:root{
-    --blue-dark:#0a2540;
-    --green-dark:#0d6d3d;
-    --green-soft:#1fa971;
-    --bg:#eef4f9;
-    --card:#ffffff;
-    --text:#1f2933;
-    --border:#d9e3ec;
-    --danger:#c62828;
-}
+    :root {
+        --primary: #0f7e59; 
+        --primary-light: #ecfdf5;
+        --secondary: #0982ba; 
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 16px;
+        --danger: #ef4444;
+    }
 
-/* CONTAINER */
-.page-container{
-    max-width:900px;
-    margin:50px auto;
-    padding:0 20px;
-}
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
+        line-height: 1.6;
+    }
 
-/* PAGE TITLE */
-.page-container h2{
-    text-align:center;
-    font-size:28px;
-    color: var(--green-dark);
-    margin-bottom:30px;
-    font-weight:700;
-}
+    /* CONTAINER - Compact Format */
+    .page-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
 
-/* APPOINTMENT TABLE */
-.appointment-table{
-    width:100%;
-    border-collapse: collapse;
-    background: var(--card);
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 6px 18px rgba(0,0,0,0.1);
-}
+    /* HEADER */
+    .page-header-box {
+        text-align: center;
+        margin-bottom: 35px;
+    }
 
-.appointment-table th, .appointment-table td{
-    padding:12px 10px;
-    text-align:center;
-    font-size:15px;
-}
+    .page-header-box h2 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--dark-navy);
+        margin: 0;
+    }
 
-.appointment-table th{
-    background: var(--green-dark);
-    color:white;
-    font-weight:600;
-}
+    .page-header-box p {
+        color: var(--sidebar-text);
+        font-size: 1rem;
+        margin-top: 5px;
+    }
 
-.appointment-table tr:nth-child(even){
-    background:#f4f8f4;
-}
+    /* APPOINTMENT TABLE - MedCore Table Style */
+    .table-wrapper {
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+    }
 
-.appointment-table tr:hover{
-    background:#e8f5e9;
-}
+    .appointment-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
 
-/* BOOK BUTTON */
-.book-btn{
-    background: linear-gradient(135deg, var(--green-dark), var(--green-soft));
-    color:white;
-    padding:8px 12px;
-    border:none;
-    border-radius:6px;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
-}
+    .appointment-table th {
+        background: #f8fafc;
+        color: var(--sidebar-text);
+        padding: 16px;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid var(--border);
+    }
 
-.book-btn:hover{
-    background: linear-gradient(135deg, var(--green-soft), var(--green-dark));
-}
+    .appointment-table td {
+        padding: 18px 15px;
+        text-align: center;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
 
-/* NOT AVAILABLE */
-.not-available{
-    color: var(--danger);
-    font-weight:700;
-}
+    .appointment-table tr:last-child td {
+        border-bottom: none;
+    }
 
-/* HEADER */
-.page-header{
-    text-align:center;
-    margin-bottom:40px;
-    font-size:24px;
-    color: var(--blue-dark);
-    font-weight:700;
-}
+    .date-cell {
+        font-weight: 700;
+        color: var(--dark-navy);
+    }
+
+    /* BOOK BUTTON - Compact Pro Style */
+    .book-btn {
+        background: var(--primary);
+        color: white;
+        padding: 10px 18px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .book-btn:hover {
+        background: #0ea171;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    /* NOT AVAILABLE */
+    .not-available {
+        color: var(--sidebar-text);
+        background: #f1f5f9;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .no-slots {
+        text-align: center;
+        padding: 60px 30px;
+        background: var(--white);
+        border-radius: var(--radius);
+        border: 2px dashed var(--border);
+        color: var(--sidebar-text);
+    }
+
+    @media (max-width: 768px) {
+        .appointment-table th, .appointment-table td {
+            padding: 12px 8px;
+            font-size: 0.85rem;
+        }
+    }
 </style>
 
 <div class="page-container">
 
-    <h2 class="page-header">Book Appointment With {{ doctor.username }}</h2>
+    <div class="page-header-box">
+        <h2><i class="fa-solid fa-calendar-check" style="color: var(--primary);"></i> Appointment Scheduling</h2>
+        <p>Booking with <strong>{{ doctor.username }}</strong></p>
+    </div>
 
     {% if availabilities %}
-    <table class="appointment-table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Morning Slot</th>
-                <th>Evening Slot</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for a in availabilities %}
-            <tr>
-                <td>{{ a.date }}</td>
+    <div class="table-wrapper">
+        <table class="appointment-table">
+            <thead>
+                <tr>
+                    <th><i class="fa-solid fa-calendar-day"></i> Available Date</th>
+                    <th><i class="fa-solid fa-sun"></i> Morning Session</th>
+                    <th><i class="fa-solid fa-moon"></i> Evening Session</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in availabilities %}
+                <tr>
+                    <td class="date-cell">{{ a.date }}</td>
 
-                <!-- Morning Slot -->
-                <td>
-                    {% if a.morning %}
-                        <form action="{{ url_for('confirm_booking') }}" method="POST" style="display:inline;">
-                            <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
-                            <input type="hidden" name="date" value="{{ a.date }}">
-                            <input type="hidden" name="slot" value="morning">
-                            <button type="submit" class="book-btn">Book Morning</button>
-                        </form>
-                    {% else %}
-                        <span class="not-available">Not Available</span>
-                    {% endif %}
-                </td>
+                    <td>
+                        {% if a.morning %}
+                            <form action="{{ url_for('confirm_booking') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                                <input type="hidden" name="date" value="{{ a.date }}">
+                                <input type="hidden" name="slot" value="morning">
+                                <button type="submit" class="book-btn">
+                                    <i class="fa-solid fa-check"></i> Book Morning
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="not-available">Not Available</span>
+                        {% endif %}
+                    </td>
 
-                <!-- Evening Slot -->
-                <td>
-                    {% if a.evening %}
-                        <form action="{{ url_for('confirm_booking') }}" method="POST" style="display:inline;">
-                            <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
-                            <input type="hidden" name="date" value="{{ a.date }}">
-                            <input type="hidden" name="slot" value="evening">
-                            <button type="submit" class="book-btn">Book Evening</button>
-                        </form>
-                    {% else %}
-                        <span class="not-available">Not Available</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    <td>
+                        {% if a.evening %}
+                            <form action="{{ url_for('confirm_booking') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                                <input type="hidden" name="date" value="{{ a.date }}">
+                                <input type="hidden" name="slot" value="evening">
+                                <button type="submit" class="book-btn" style="background: var(--secondary);">
+                                    <i class="fa-solid fa-check"></i> Book Evening
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="not-available">Not Available</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
-        <div class="not-available" style="text-align:center; padding:20px; font-size:16px;">
-            No slots available for booking.
+        <div class="no-slots">
+            <i class="fa-solid fa-calendar-xmark" style="font-size: 2.5rem; display: block; margin-bottom: 15px; color: var(--border);"></i>
+            Currently, there are no open slots available for booking. Please check back later.
         </div>
     {% endif %}
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{{ url_for('see_department', dept_id=doctor.department_id) }}" style="color: var(--sidebar-text); text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+            <i class="fa-solid fa-arrow-left"></i> Select a Different Physician
+        </a>
+    </div>
 
 </div>
 

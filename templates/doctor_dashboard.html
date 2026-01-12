@@ -1,289 +1,288 @@
 {% extends "base.html" %}
-{% block title %}Doctor Dashboard | MedCore{% endblock %}
+{% block title %}Doctor Dashboard | MedCore Pro{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-:root {
-    --primary-green: #0d6d3d;
-    --accent-green: #2ecc71;
-    --light-bg: #f4f8fb;
-    --card-bg: #ffffff;
-    --border-color: #dce5ec;
-    --text-dark: #1f2933;
-    --transition-speed: 0.3s;
-}
-
-/* MAIN WRAPPER */
-.doctor-dashboard-container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 20px;
-}
-
-/* WELCOME BOX */
-.welcome-box {
-    background: var(--primary-green);
-    color: white;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    font-size: 22px;
-    font-weight: 600;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-/* APPOINTMENT GRID */
-.appointment-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-}
-
-/* APPOINTMENT CARD */
-.appointment-card {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-.appointment-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-}
-
-.section-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 25px; /* increase this to add more space */
-    color: #333;
-}
-
-/* CARD HEADER */
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-/* STATUS */
-.status-pending {
-    background: #ffc107;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.status-completed {
-    background: var(--accent-green);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.status-cancelled {
-    background: #dc3545;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-/* TREATMENT BOX */
-.treatment-box {
-    padding: 8px 12px;
-    background: #f1f9f1;
-    border-radius: 8px;
-    font-weight: 500;
-    color: var(--text-dark);
-}
-
-/* TREATMENT FORM INLINE */
-.treatment-form {
-    display: flex;
-    gap: 10px;
-    margin-top: 5px;
-}
-
-.treatment-form input[type="text"] {
-    flex: 1;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    font-size: 14px;
-}
-
-.treatment-form button {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: none;
-    background: var(--primary-green);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all var(--transition-speed);
-}
-
-.treatment-form button:hover {
-    background: var(--accent-green);
-}
-
-/* DOCTOR AVAILABILITY */
-.availability-btn {
-    background: var(--primary-green);
-    padding: 14px 24px;
-    color: white;
-    font-weight: 600;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: 0.3s;
-    display: inline-block;
-}
-
-.availability-btn:hover {
-    background: var(--accent-green);
-}
-
-/* NO DATA */
-.no-data {
-    padding: 20px;
-    font-style: italic;
-    text-align: center;
-    background: #fafafa;
-    border-radius: 12px;
-    color: #888;
-    border: 1px dashed #ccc;
-}
-
-/* TABLES */
-.table-container {
-    overflow-x: auto;
-    margin-bottom: 40px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--card-bg);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-}
-
-table th, table td {
-    padding: 12px 10px;
-    text-align: center;
-    font-size: 14px;
-}
-
-table th {
-    background: var(--primary-green);
-    color: white;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-}
-
-table tr:nth-child(even) {
-    background: #f6f9f6;
-}
-
-table tr:hover {
-    background: #e0f2e9;
-}
-
-.action-btn {
-    padding: 6px 12px;
-    margin: 2px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    color: white;
-    display: inline-block;
-    transition: 0.2s ease;
-}
-
-.edit-btn { background: var(--primary-green); }
-.edit-btn:hover { background: var(--accent-green); }
-
-.delete-btn { background: #c62828; }
-.delete-btn:hover { background: #a71f1f; }
-
-.blacklist-btn { background: #ff6f00; }
-.blacklist-btn:hover { background: #e65f00; }
-
-@media (max-width: 768px) {
-    .appointment-grid {
-        grid-template-columns: 1fr;
+    :root {
+        --primary: #0f7e59; 
+        --primary-light: #ecfdf5;
+        --secondary: #0ea5e9; 
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 16px;
     }
-}
+
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
+        line-height: 1.6;
+    }
+
+    /* MAIN WRAPPER */
+    .doctor-dashboard-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* WELCOME BOX (Compact Pro Style) */
+    .welcome-banner {
+        background: var(--white);
+        padding: 24px 32px;
+        border-radius: var(--radius);
+        margin-bottom: 35px;
+        box-shadow: var(--shadow-sm);
+        border-left: 6px solid var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .welcome-banner h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--dark-navy);
+    }
+
+    /* SECTION TITLE */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 10px;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-navy);
+    }
+
+    /* APPOINTMENT GRID */
+    .appointment-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+    }
+
+    /* APPOINTMENT CARD */
+    .appointment-card {
+        background: var(--white);
+        padding: 24px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .appointment-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
+
+    /* CARD HEADER */
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .patient-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--dark-navy);
+    }
+
+    /* STATUS BADGES */
+    .status-pill {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-completed { background: #dcfce7; color: #15803d; }
+    .status-cancelled { background: #fee2e2; color: #b91c1c; }
+
+    .appt-detail {
+        font-size: 0.9rem;
+        color: var(--sidebar-text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* TREATMENT BOX */
+    .treatment-display {
+        padding: 12px 16px;
+        background: var(--primary-light);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #065f46;
+        border: 1px solid #bdf0cc;
+    }
+
+    /* TREATMENT FORM */
+    .treatment-form {
+        display: flex;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    .treatment-form input[type="text"] {
+        flex: 1;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        font-size: 0.85rem;
+        outline: none;
+    }
+
+    .treatment-form input[type="text"]:focus {
+        border-color: var(--primary);
+    }
+
+    .btn-assign {
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: none;
+        background: var(--primary);
+        color: white;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-assign:hover {
+        background: #0ea171;
+    }
+
+    /* AVAILABILITY BUTTON */
+    .availability-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--dark-navy);
+        padding: 14px 28px;
+        color: white;
+        font-weight: 700;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .availability-link:hover {
+        background: #334155;
+        transform: translateY(-2px);
+    }
+
+    /* NO DATA */
+    .no-data-box {
+        padding: 50px;
+        text-align: center;
+        background: var(--white);
+        border-radius: var(--radius);
+        border: 2px dashed var(--border);
+        color: var(--sidebar-text);
+    }
+
+    @media (max-width: 768px) {
+        .appointment-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <div class="doctor-dashboard-container">
 
-    <!-- WELCOME BOX -->
-    <div class="welcome-box">
-        Welcome, {{ doctor_name }}
+    <div class="welcome-banner">
+        <i class="fa-solid fa-user-doctor" style="font-size: 1.8rem; color: var(--primary);"></i>
+        <h2>Welcome, {{ doctor_name }}</h2>
     </div>
 
-    <!-- APPOINTMENTS -->
-    <div class="section-title">Your Appointments</div>
+    <div class="section-header">
+        <div class="section-title">Patient Consultations</div>
+    </div>
 
     {% if appointments and appointments|length > 0 %}
     <div class="appointment-grid">
         {% for ap in appointments %}
         <div class="appointment-card">
             <div class="card-header">
-                <div>{{ ap.patient.username }}</div>
+                <div class="patient-name">{{ ap.patient.username }}</div>
                 <div>
                     {% if ap.status == 'Pending' %}
-                        <span class="status-pending">{{ ap.status }}</span>
+                        <span class="status-pill status-pending">{{ ap.status }}</span>
                     {% elif ap.status == 'Completed' %}
-                        <span class="status-completed">{{ ap.status }}</span>
+                        <span class="status-pill status-completed">{{ ap.status }}</span>
                     {% else %}
-                        <span class="status-cancelled">{{ ap.status }}</span>
+                        <span class="status-pill status-cancelled">{{ ap.status }}</span>
                     {% endif %}
                 </div>
             </div>
 
-            <p><strong>Date:</strong> {{ ap.date }}</p>
-            <p><strong>Slot:</strong> {{ ap.time }}</p>
-            <p><strong>Treatment:</strong></p>
+            <div class="appt-detail">
+                <i class="fa-solid fa-calendar-day" style="width: 16px;"></i>
+                {{ ap.date }}
+            </div>
+            <div class="appt-detail">
+                <i class="fa-solid fa-clock" style="width: 16px;"></i>
+                {{ ap.time|capitalize }} Session
+            </div>
 
-            {% if ap.treatment_name %}
-                <div class="treatment-box">{{ ap.treatment_name }}</div>
-            {% else %}
-                <form class="treatment-form" method="POST" action="{{ url_for('assign_treatment') }}">
-                    <input type="hidden" name="appointment_id" value="{{ ap.id }}">
-                    <input type="text" name="treatment_name" placeholder="Enter treatment" required>
-                    <button type="submit">Assign</button>
-                </form>
-            {% endif %}
+            <div style="margin-top: 10px;">
+                <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--sidebar-text); margin-bottom: 5px; display: block;">Treatment Plan</label>
+                {% if ap.treatment_name %}
+                    <div class="treatment-display">
+                        <i class="fa-solid fa- prescription-bottle-medical"></i> {{ ap.treatment_name }}
+                    </div>
+                {% else %}
+                    <form class="treatment-form" method="POST" action="{{ url_for('assign_treatment') }}">
+                        <input type="hidden" name="appointment_id" value="{{ ap.id }}">
+                        <input type="text" name="treatment_name" placeholder="Enter diagnosis/treatment..." required>
+                        <button type="submit" class="btn-assign">Assign</button>
+                    </form>
+                {% endif %}
+            </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-        <div class="no-data">No booked appointments yet.</div>
+        <div class="no-data-box">
+            <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; margin-bottom: 15px; color: var(--border);"></i>
+            <p>No appointments booked in your schedule yet.</p>
+        </div>
     {% endif %}
 
-    <!-- DOCTOR AVAILABILITY -->
-    
-    <a href="{{url_for('doctor_availability')}}" class="availability-btn">
-        + Provide / Update Availability
-    </a>
+    <div style="margin-top: 30px;">
+        <a href="{{url_for('doctor_availability')}}" class="availability-link">
+            <i class="fa-solid fa-calendar-plus"></i> Update My Availability
+        </a>
+    </div>
 
 </div>
 {% endblock %}

@@ -1,287 +1,294 @@
 {% extends "base.html" %}
+
+{% block title %}Patient Dashboard | MedCore Pro{% endblock %}
+
 {% block content %}
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-                <i class="fa-solid fa-circle-check"></i>
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
+    :root {
+        --primary: #0f7e59;
+        --primary-light: #ecfdf5;
+        --secondary: #0ea5e9; 
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+        --radius: 12px;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+    }
 
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
+    }
+
+    /* FLASH MESSAGES */
     .alert {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 14px 18px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
+        max-width: 1100px;
+        margin: 20px auto;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: var(--shadow-sm);
+        transition: opacity 0.5s ease;
+    }
 
-.alert-success {
-    background: #e8f5e9;
-    color: #1b5e20;
-    border-left: 5px solid #2e7d32;
-}
+    .alert-success { background: #dcfce7; color: #15803d; border-left: 5px solid #10b981; }
 
+    .dashboard-container {
+        max-width: 1150px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
 
-:root{
-    --blue-dark:#0a2540;
-    --green-dark:#0d6d3d;
-    --green-soft:#1fa971;
-    --bg:#eef4f9;
-    --card:#ffffff;
-    --text:#1f2933;
-    --danger:#c62828;
-    --border:#d9e3ec;
-}
+    .dashboard-header { margin-bottom: 30px; }
+    .dashboard-title { font-size: 1.75rem; font-weight: 800; color: var(--dark-navy); margin: 0; }
 
-/* PAGE */
-body{
-    background:var(--bg);
-}
+    /* DEPARTMENTS GRID */
+    .dept-section { margin-bottom: 50px; }
+    .dept-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
 
-/* CONTAINER */
-.dashboard-container{
-    max-width:1100px;
-    margin:50px auto;
-    padding:0 20px;
-}
+    .dept-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 30px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
 
-/* HEADER */
-.dashboard-title{
-    text-align:center;
-    font-size:32px;
-    font-weight:700;
-    color:var(--green-dark);
-    margin-bottom:50px;
-}
+    .dept-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
 
-/* ================= DEPARTMENTS ================= */
+    .dept-card i { font-size: 2.3rem; color: var(--primary); margin-bottom: 12px; }
+    .dept-card h3 { font-size: 1rem; margin: 0 0 15px 0; font-weight: 700; color: var(--dark-navy); }
 
-.dept-section{
-    margin-bottom:70px;
-}
+    .dept-card a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        transition: 0.2s;
+    }
 
-.dept-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:30px;
-}
+    .dept-card a:hover { background: var(--primary); color: white; }
 
-.dept-card{
-    background:var(--card);
-    border-radius:16px;
-    padding:28px 24px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.12);
-    border-top:5px solid var(--green-dark);
-    transition:0.3s;
-}
+    /* APPOINTMENTS LIST */
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark-navy);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+    }
 
-.dept-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 16px 35px rgba(0,0,0,0.18);
-}
+    .appointment-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 25px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+    }
 
-.dept-card h3{
-    font-size:22px;
-    margin-bottom:18px;
-    font-weight:700;
-    color:var(--blue-dark);
-}
+    .appt-header {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        align-items: center;
+        padding-bottom: 15px;
+    }
 
-.dept-card a{
-    display:inline-block;
-    background:linear-gradient(135deg,var(--green-dark),var(--green-soft));
-    padding:10px 24px;
-    border-radius:10px;
-    color:white;
-    text-decoration:none;
-    font-weight:600;
-}
+    .info-block h4 {
+        font-size: 0.7rem;
+        color: var(--sidebar-text);
+        margin: 0 0 4px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-/* ================= APPOINTMENTS ================= */
+    .info-block p { font-size: 0.95rem; color: var(--dark-navy); font-weight: 600; margin: 0; }
 
-.section-title{
-    text-align:center;
-    font-size:26px;
-    font-weight:700;
-    color:var(--blue-dark);
-    margin-bottom:35px;
-}
+    /* TREATMENT BOX */
+    .treatment-display {
+        margin-top: 15px;
+        padding: 15px 20px;
+        background: #fffcf0; /* Medical prescription yellow tint */
+        border: 1px solid #fef3c7;
+        border-left: 4px solid var(--warning);
+        border-radius: 8px;
+    }
 
-.appointments{
-    display:flex;
-    flex-direction:column;
-    gap:30px;
-}
+    .treatment-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #92400e;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-/* APPOINTMENT CARD */
-.appointment-card{
-    background:var(--card);
-    border-left:8px solid var(--green-dark);
-    border-radius:18px;
-    padding:28px;
-    box-shadow:0 14px 30px rgba(0,0,0,0.15);
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:22px;
-}
+    .treatment-text {
+        font-size: 1rem;
+        color: #451a03;
+        font-weight: 500;
+        line-height: 1.4;
+    }
 
-/* INFO */
-.info h4{
-    font-size:14px;
-    color:var(--blue-dark);
-    margin-bottom:6px;
-    font-weight:700;
-}
+    /* STATUS & BUTTONS */
+    .status-pill {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
 
-.info p{
-    font-size:15px;
-    color:var(--text);
-    font-weight:600;
-    margin:0;
-}
+    .status-completed { background: #dcfce7; color: #15803d; }
+    .status-pending { background: #e0f2fe; color: #0369a1; }
+    .status-cancelled { background: #fee2e2; color: #b91c1c; }
 
-/* STATUS */
-.status{
-    display:inline-block;
-    padding:6px 14px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:700;
-    color:white;
-}
+    .cancel-btn {
+        background: transparent;
+        color: var(--danger);
+        border: 1px solid #fee2e2;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.8rem;
+        transition: 0.2s;
+    }
 
-.status.completed{background:var(--green-soft);}
-.status.pending{background:var(--green-dark);}
-.status.cancelled{background:var(--danger);}
+    .cancel-btn:hover { background: var(--danger); color: white; }
 
-/* CANCEL BUTTON */
-.cancel-form{
-    display:flex;
-    align-items:center;
-}
-
-.cancel-btn{
-    background:var(--danger);
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:600;
-}
-
-.cancel-btn:hover{
-    background:#a61e1e;
-}
-
-/* EMPTY */
-.empty{
-    text-align:center;
-    padding:35px;
-    background:#e3edf4;
-    border-radius:18px;
-    font-size:16px;
-    color:#555;
-}
+    @media (max-width: 768px) {
+        .appt-header { grid-template-columns: 1fr 1fr; }
+        .action-block { grid-column: span 2; text-align: left !important; margin-top: 10px; }
+    }
 </style>
 
 <div class="dashboard-container">
 
-    <div class="dashboard-title">
-        Welcome, {{ patient_name }}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="fa-solid fa-bell"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Welcome, {{ patient_name }}</h1>
     </div>
 
-    <!-- DEPARTMENTS -->
     <div class="dept-section">
         <div class="dept-grid">
             {% for dept in departments %}
             <div class="dept-card">
+                <i class="fa-solid fa-hospital-user"></i>
                 <h3>{{ dept.department_name }}</h3>
                 <a href="{{ url_for('see_department', dept_id=dept.id) }}">
-                    View Doctors
+                    Book Appointment
                 </a>
             </div>
             {% endfor %}
         </div>
     </div>
 
-    <!-- APPOINTMENTS -->
-    <div class="section-title">Your Appointments</div>
+    <h2 class="section-title">My Appointments & Treatments</h2>
 
-    <div class="appointments">
+    <div class="appointments-list">
         {% if appointments %}
             {% for appt in appointments | reverse %}
             <div class="appointment-card">
-
-                <div class="info">
-                    <h4>Doctor</h4>
-                    <p>{{ appt.doctor.username }}</p>
+                <div class="appt-header">
+                    <div class="info-block">
+                        <h4>Physician</h4>
+                        <p>{{ appt.doctor.username }}</p>
+                    </div>
+                    <div class="info-block">
+                        <h4>Specialty</h4>
+                        <p>{{ appt.doctor.department.department_name }}</p>
+                    </div>
+                    <div class="info-block">
+                        <h4>Date & Time</h4>
+                        <p>{{ appt.date }} <br> <small>{{ appt.time|capitalize }}</small></p>
+                    </div>
+                    <div class="info-block">
+                        <h4>Status</h4>
+                        <span class="status-pill status-{{ 'completed' if appt.status == 'Completed' else 'cancelled' if appt.status == 'Cancelled' else 'pending' }}">
+                            {{ appt.status }}
+                        </span>
+                    </div>
+                    <div class="action-block" style="text-align: right;">
+                        {% if appt.status not in ['Cancelled','Completed'] %}
+                        <form method="POST" action="{{ url_for('cancel_appointment', appt_id=appt.id) }}">
+                            <button class="cancel-btn" type="submit">Cancel</button>
+                        </form>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <div class="info">
-                    <h4>Department</h4>
-                    <p>{{ appt.doctor.department.department_name }}</p>
+                {% if appt.treatment_name %}
+                <div class="treatment-display">
+                    <div class="treatment-label">
+                        <i class="fa-solid fa-prescription-bottle-medical"></i> Assigned Treatment / Diagnosis
+                    </div>
+                    <div class="treatment-text">
+                        {{ appt.treatment_name }}
+                    </div>
                 </div>
-
-                <div class="info">
-                    <h4>Date</h4>
-                    <p>{{ appt.date }}</p>
-                </div>
-
-                <div class="info">
-                    <h4>Slot</h4>
-                    <p>{{ appt.time|capitalize }}</p>
-                </div>
-
-                <div class="info">
-                    <h4>Status</h4>
-                    {% if appt.status == 'Completed' %}
-                        <span class="status completed">Completed</span>
-                    {% elif appt.status == 'Cancelled' %}
-                        <span class="status cancelled">Cancelled</span>
-                    {% else %}
-                        <span class="status pending">{{ appt.status }}</span>
-                    {% endif %}
-                </div>
-
-                <div class="info">
-                    <h4>Treatment</h4>
-                    <p>{{ appt.treatment_name if appt.treatment_name else 'Not Assigned Yet' }}</p>
-                </div>
-
-                <div class="cancel-form">
-                    {% if appt.status not in ['Cancelled','Completed'] %}
-                    <form method="POST" action="{{ url_for('cancel_appointment', appt_id=appt.id) }}">
-                        <button class="cancel-btn" type="submit">
-                            Cancel Appointment
-                        </button>
-                    </form>
-                    {% endif %}
-                </div>
+                {% endif %}
 
             </div>
             {% endfor %}
         {% else %}
-            <div class="empty">No appointments booked yet.</div>
+            <div style="text-align:center; padding: 60px; color: var(--sidebar-text); background: white; border-radius: 12px; border: 1px solid var(--border);">
+                <i class="fa-solid fa-calendar-xmark" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                No appointment history found.
+            </div>
         {% endif %}
     </div>
-
 </div>
+
 <script>
+    // Auto-hide alerts after 4 seconds
     setTimeout(() => {
-        const alert = document.querySelector('.alert');
-        if (alert) alert.style.opacity = '0';
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => { alert.style.opacity = '0'; });
     }, 4000);
 </script>
 

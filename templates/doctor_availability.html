@@ -1,203 +1,237 @@
 {% extends "base.html" %}
-{% block title %}Doctor Availability | MedCore{% endblock %}
+{% block title %}Doctor Availability | MedCore Pro{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-:root {
-    --primary-blue: #0a2540;
-    --primary-green: #0d6d3d;
-    --accent-green: #2ecc71;
-    --light-bg: #f4f8fb;
-    --card-bg: #ffffff;
-    --border-color: #dce5ec;
-    --danger: #c62828;
-    --warning: #ff6f00;
-    --text-dark: #1f2933;
-}
+    :root {
+        --primary: #0f7e59; 
+        --primary-light: #ecfdf5;
+        --secondary: #0ea5e9; 
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 16px;
+    }
 
-/* PAGE WRAPPER */
-.page-wrapper {
-    max-width: 900px;
-    margin: 40px auto 60px;
-    padding: 0 20px;
-}
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
+        line-height: 1.6;
+    }
 
-/* BACK BUTTON */
-.back-btn {
-    display: inline-block;
-    margin-bottom: 25px;
-    padding: 10px 18px;
-    background: var(--primary-green);
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
+    /* PAGE WRAPPER */
+    .page-wrapper {
+        max-width: 900px;
+        margin: 40px auto 60px;
+        padding: 0 20px;
+    }
 
-.back-btn:hover {
-    background: var(--accent-green);
-}
+    /* BACK BUTTON */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+        font-weight: 700;
+        color: var(--sidebar-text);
+        text-decoration: none;
+        transition: color 0.2s;
+        font-size: 0.9rem;
+    }
 
-/* PAGE TITLE */
-h2 {
-    text-align: center;
-    color: var(--primary-blue);
-    font-size: 28px;
-    margin-bottom: 40px;
-}
+    .back-link:hover {
+        color: var(--primary);
+    }
 
-/* AVAILABILITY TABLE */
-.availability-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: var(--card-bg);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-}
+    /* HEADER */
+    .page-header {
+        margin-bottom: 30px;
+        text-align: left;
+    }
 
-.availability-table th,
-.availability-table td {
-    padding: 16px 12px;
-    text-align: center;
-    font-size: 15px;
-}
+    .page-header h2 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--dark-navy);
+        margin: 0;
+    }
 
-.availability-table th {
-    background: var(--primary-green);
-    color: white;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
+    .page-header p {
+        color: var(--sidebar-text);
+        margin-top: 5px;
+    }
 
-.availability-table tr:nth-child(even) {
-    background: #f4f8f4;
-}
+    /* AVAILABILITY TABLE */
+    .table-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+    }
 
-.availability-table tr:hover {
-    background: #e8f5e9;
-}
+    .availability-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-/* SLOT TOGGLE */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-}
+    .availability-table th {
+        background: #f8fafc;
+        color: var(--sidebar-text);
+        padding: 16px;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid var(--border);
+    }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+    .availability-table td {
+        padding: 16px;
+        text-align: center;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
 
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 24px;
-}
+    .date-text {
+        font-weight: 700;
+        color: var(--dark-navy);
+    }
 
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-}
+    /* MODERN SWITCH TOGGLE */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 46px;
+        height: 24px;
+    }
 
-input:checked + .slider {
-    background-color: var(--primary-green);
-}
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
 
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .3s;
+        border-radius: 24px;
+    }
 
-/* SLOT LABEL */
-.slot-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
-    color: var(--text-dark);
-}
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .3s;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-/* FORM INLINE */
-.inline-form {
-    display: inline-block;
-    margin: 0;
-}
+    input:checked + .slider {
+        background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+
+    /* EMPTY STATE */
+    .no-data {
+        text-align: center;
+        padding: 60px 30px;
+        background: var(--white);
+        border-radius: var(--radius);
+        border: 2px dashed var(--border);
+        color: var(--sidebar-text);
+    }
+
+    .inline-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 
 <div class="page-wrapper">
 
-    <!-- BACK BUTTON -->
-    <a href="{{ url_for('doctor_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+    <a href="{{ url_for('doctor_dashboard') }}" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </a>
 
-    <!-- PAGE TITLE -->
-    <h2>Doctor Availability</h2>
+    <div class="page-header">
+        <h2>Schedule Management</h2>
+        <p>Toggle your available sessions for the upcoming week.</p>
+    </div>
 
     {% if availabilities and availabilities|length > 0 %}
-    <table class="availability-table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Morning</th>
-                <th>Evening</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for a in availabilities %}
-            <tr>
-                <td>{{ a.date }}</td>
+    <div class="table-card">
+        <table class="availability-table">
+            <thead>
+                <tr>
+                    <th><i class="fa-solid fa-calendar-day"></i> Date</th>
+                    <th><i class="fa-solid fa-sun"></i> Morning Session</th>
+                    <th><i class="fa-solid fa-moon"></i> Evening Session</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in availabilities %}
+                <tr>
+                    <td class="date-text">{{ a.date }}</td>
 
-                <!-- MORNING TOGGLE -->
-                <td>
-                    <form method="POST" action="{{ url_for('toggle_availability') }}" class="inline-form">
-                        <input type="hidden" name="id" value="{{ a.date }}">
-                        <input type="hidden" name="slot" value="morning">
-                        <label class="switch">
-                            <input type="checkbox" onchange="this.form.submit()"
-                                   {% if a.morning %}checked{% endif %}>
-                            <span class="slider"></span>
-                        </label>
-                    </form>
-                </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('toggle_availability') }}" class="inline-form">
+                            <input type="hidden" name="id" value="{{ a.date }}">
+                            <input type="hidden" name="slot" value="morning">
+                            <label class="switch">
+                                <input type="checkbox" onchange="this.form.submit()"
+                                       {% if a.morning %}checked{% endif %}>
+                                <span class="slider"></span>
+                            </label>
+                        </form>
+                    </td>
 
-                <!-- EVENING TOGGLE -->
-                <td>
-                    <form method="POST" action="{{ url_for('toggle_availability') }}" class="inline-form">
-                        <input type="hidden" name="id" value="{{ a.date }}">
-                        <input type="hidden" name="slot" value="evening">
-                        <label class="switch">
-                            <input type="checkbox" onchange="this.form.submit()"
-                                   {% if a.evening %}checked{% endif %}>
-                            <span class="slider"></span>
-                        </label>
-                    </form>
-                </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('toggle_availability') }}" class="inline-form">
+                            <input type="hidden" name="id" value="{{ a.date }}">
+                            <input type="hidden" name="slot" value="evening">
+                            <label class="switch">
+                                <input type="checkbox" onchange="this.form.submit()"
+                                       {% if a.evening %}checked{% endif %}>
+                                <span class="slider"></span>
+                            </label>
+                        </form>
+                    </td>
 
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
-        <div style="text-align:center; margin-top:40px; font-size:16px; color:#555;">
-            No availability data yet.
+        <div class="no-data">
+            <i class="fa-solid fa-calendar-xmark" style="font-size: 2.5rem; display: block; margin-bottom: 15px; color: var(--border);"></i>
+            <p>No availability data generated yet. Please contact admin if this persists.</p>
         </div>
     {% endif %}
 

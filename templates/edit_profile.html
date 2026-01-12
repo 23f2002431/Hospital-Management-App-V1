@@ -1,97 +1,161 @@
 {% extends "base.html" %}
-{% block title %}Edit Profile | MedCore{% endblock %}
+{% block title %}Edit Profile | MedCore Pro{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-    /* PAGE BACKGROUND */
+    :root {
+        --primary: #0f7e59;
+        --primary-light: #ecfdf5;
+        --secondary: #0ea5e9; 
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 16px;
+    }
+
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
+        line-height: 1.6;
+    }
+
+    /* CENTERED CONTAINER */
     .profile-wrapper {
-        min-height: calc(100vh - 140px);
+        min-height: calc(100vh - 100px);
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
-        padding: 30px 15px;
+        padding: 40px 20px;
     }
 
-    /* CARD */
+    /* CARD DESIGN */
     .profile-card {
-        background: #ffffff;
+        background: var(--white);
         width: 100%;
-        max-width: 420px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        max-width: 450px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
         overflow: hidden;
+        position: relative;
+    }
+
+    /* Top Accent Line */
+    .profile-card::before {
+        content: ""; 
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 5px; 
+        background: var(--primary);
     }
 
     /* HEADER */
     .profile-header {
-        background: linear-gradient(135deg, #0a2540, #0d6d3d);
-        color: white;
-        padding: 22px;
+        padding: 40px 32px 10px 32px;
         text-align: center;
     }
 
     .profile-header h2 {
         margin: 0;
-        font-size: 22px;
-        font-weight: 600;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--dark-navy);
     }
 
     .profile-header p {
-        margin-top: 6px;
-        font-size: 14px;
-        opacity: 0.9;
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: var(--sidebar-text);
     }
 
     /* BODY */
     .profile-body {
-        padding: 26px 24px;
+        padding: 20px 32px 40px 32px;
     }
 
     .form-line {
-        margin-bottom: 18px;
+        margin-bottom: 20px;
     }
 
     .form-line label {
-        font-size: 14px;
-        font-weight: 600;
-        color: #0a2540;
         display: block;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark-navy);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .form-line input {
         width: 100%;
-        padding: 11px;
-        border-radius: 6px;
-        border: 1px solid #dce5ec;
-        font-size: 15px;
-        outline: none;
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        font-size: 0.95rem;
+        background: #fdfdfd;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
     }
 
     .form-line input:focus {
-        border-color: #0d6d3d;
-        box-shadow: 0 0 0 2px rgba(13, 109, 61, 0.15);
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        background: #fff;
     }
 
     /* BUTTON */
     .save-btn {
         width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        border: none;
-        border-radius: 6px;
-        background: #0d6d3d;
+        padding: 14px;
+        background: var(--primary);
         color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 700;
         cursor: pointer;
         margin-top: 10px;
-        font-weight: 600;
-        transition: 0.3s;
+        transition: all 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
     }
 
     .save-btn:hover {
-        background: #0a4c2a;
+        background: #0ea171;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    /* BACK LINK */
+    .back-nav {
+        text-align: center;
+        margin-top: 24px;
+    }
+
+    .back-link {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--sidebar-text);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--primary);
     }
 </style>
 
@@ -100,7 +164,8 @@
     <div class="profile-card">
 
         <div class="profile-header">
-            <h2>Edit Profile</h2>
+            <i class="fa-solid fa-user-circle" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h2>Account Settings</h2>
             <p>Update your personal information</p>
         </div>
 
@@ -109,24 +174,32 @@
             <form method="POST">
 
                 <div class="form-line">
-                    <label>Your Name</label>
+                    <label>Full Name</label>
                     <input type="text" name="updated_name"
-                           value="{{ patient.username }}" required>
+                           value="{{ patient.username }}" placeholder="Enter your name" required>
                 </div>
 
                 <div class="form-line">
                     <label>Email Address</label>
                     <input type="email" name="updated_email"
-                           value="{{ patient.email }}" required>
+                           value="{{ patient.email }}" placeholder="Enter your email" required>
                 </div>
 
-                <button class="save-btn">Save Changes</button>
+                <button class="save-btn">
+                    <i class="fa-solid fa-check-circle"></i> Save Changes
+                </button>
 
             </form>
+
+            <div class="back-nav">
+                <a href="{{ url_for('patient_dashboard') }}" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
 
         </div>
     </div>
 
 </div>
 
-{% endblock %}
+{% endblock %}```

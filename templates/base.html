@@ -3,174 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MedCore| Hospital Management System{% endblock %}</title>
+    <title>{% block title %}MedCore| Healthcare Management{% endblock %}</title>
 
-    <!-- Base Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --primary-blue: #0a2540;
-            --primary-green: #0d6d3d;
-            --accent-green: #2ecc71;
-            --light-bg: #f4f8fb;
-            --text-dark: #1f2933;
-            --text-light: #ffffff;
-            --border-color: #d1d9e0;
+            /* True Dark Theme Palette */
+            --primary: #d2d6d5; 
+            --primary-hover: #34d399;
+            --secondary: #0ea5e9; 
+            
+            --bg-body: #0f172a;        /* Body: Deep Slate Navy */
+            --bg-header-footer: #181c2f; /* Header/Footer: True Obsidian Dark */
+            --bg-card: #1e293b;        /* Cards: Lighter Slate */
+            --bg-hover: #334155;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
+            --radius: 12px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--light-bg);
-            color: var(--text-dark);
+            background-color: var(--bg-body);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* ===================== NAVBAR ===================== */
+        /* ===================== NAVBAR (Deep Dark) ===================== */
         .navbar {
-            background: linear-gradient(
-                90deg,
-                var(--primary-blue),
-                var(--primary-green)
-            );
-            padding: 14px 30px;
+            background-color: var(--bg-header-footer);
+            padding: 14px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            /* Border removed to eliminate the white line */
+            border-bottom: none; 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .navbar .logo {
             font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--text-light);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .navbar .logo span {
-            color: var(--accent-green);
+            color:rgb(63, 211, 164)
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-links a {
-            color: var(--text-light);
-            margin-left: 28px;
+            color: var(--text-muted);
+            padding: 10px 16px;
             text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            position: relative;
-            padding-bottom: 4px;
-            transition: 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .nav-links a::after {
-            content: "";
-            position: absolute;
-            width: 0%;
-            height: 2px;
-            background-color: var(--accent-green);
-            left: 0;
-            bottom: 0;
-            transition: width 0.3s ease;
+        .nav-links a:hover {
+            color: var(--text-main);
+            background-color: var(--bg-hover);
         }
 
-        .nav-links a:hover::after {
-            width: 100%;
+        .nav-links a.btn-cta {
+            background-color: var(--primary);
+            color: var(--bg-header-footer); 
+            padding: 10px 20px;
+            font-weight: 700;
         }
 
-        
+        .nav-links a.btn-cta:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
 
         /* ===================== MAIN CONTENT ===================== */
         .main-container {
             flex: 1;
-            padding: 0px;
+            padding: 0;
         }
 
-        /* ===================== FOOTER ===================== */
+        /* ===================== FOOTER (Deep Dark) ===================== */
         .site-footer {
-            background-color: var(--primary-blue);
-            color: var(--text-light);
+            background-color: var(--bg-header-footer);
+            color: var(--text-muted);
             text-align: center;
-            padding: 12px 10px;
-            font-size: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 20px;
+            font-size: 13px;
+            /* Border removed to eliminate the line between content and footer */
+            border-top: none; 
+            margin-top: auto;
         }
 
         .site-footer span {
-            color: var(--accent-green);
-            font-weight: 500;
+            color: var(--primary);
+            font-weight: 700;
         }
 
-        /* ===================== RESPONSIVE ===================== */
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .nav-links {
-                margin-top: 10px;
-            }
-
-            .nav-links a {
-                margin-left: 0;
-                margin-right: 18px;
-            }
-
-            .main-container {
-                padding: 20px;
-            }
+            .navbar { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .nav-links { width: 100%; justify-content: center; flex-wrap: wrap; }
         }
     </style>
 </head>
-
 <body>
-
-    <!-- ===================== NAVBAR ===================== -->
     <nav class="navbar">
-        <div class="logo">Med<span>Core</span></div>
-
+        <a href="/" class="logo">
+            <i class="fa-solid fa-square-h" style="color: rgb(63, 211, 164); font-size: 26px;"></i>Med<span>Core</span>
+        </a>
         <div class="nav-links">
-
             {% if session.get('role') == 'patient' %}
-                <a href="{{ url_for('patient_dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('edit_profile') }}">Profile</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
-
+                <a href="{{ url_for('patient_dashboard') }}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="{{ url_for('edit_profile') }}"><i class="fa-solid fa-circle-user"></i> Profile</a>
+                <a href="{{ url_for('logout') }}" style="color: #f87171;"><i class="fa-solid fa-power-off"></i> Logout</a>
             {% elif session.get('role') == 'doctor' %}
-                <a href="{{ url_for('doctor_dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
-
+                <a href="{{ url_for('logout') }}" style="color: #f87171;"><i class="fa-solid fa-power-off"></i> Logout</a>
             {% elif session.get('role') == 'admin' %}
-                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
-
+                <a href="{{ url_for('logout') }}" style="color: #f87171;"><i class="fa-solid fa-power-off"></i> Logout</a>
             {% else %}
-                <a href="{{ url_for('registration') }}">Register</a>
-                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('registration') }}">Join Now</a>
+                <a href="{{ url_for('login') }}" class="btn-cta">Portal Login <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
             {% endif %}
-
         </div>
     </nav>
 
-    <!-- ===================== PAGE CONTENT ===================== -->
     <main class="main-container">
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- ===================== FOOTER ===================== -->
     <footer class="site-footer">
-        <p>
-            &copy; 2025 <span>MedCore</span> Hospital Management System.
-            All Rights Reserved.
-        </p>
+        <p>&copy; 2025 <b>MedCore</b> Health Intelligence. <span>Built for Excellence.</span> All Rights Reserved.</p>
     </footer>
-
 </body>
 </html>

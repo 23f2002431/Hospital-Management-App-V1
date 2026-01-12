@@ -1,164 +1,230 @@
 {% extends "base.html" %}
-{% block title %}Doctors in {{ department.department_name }}{% endblock %}
+{% block title %}Doctors in {{ department.department_name }} | MedCore Pro{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
     :root {
-        --primary-green: #0d6d3d;
-        --light-green: #e8f5e9;
-        --dark-green: #004d25;
+        --primary: #0f7e59; /* Mint Green */
+        --primary-light: #ecfdf5;
+        --secondary:#0982ba;  /* Blue */
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+        --radius: 16px;
     }
 
-    body {
-        background: var(--light-green);
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
     }
 
     .page-container {
-        max-width: 1200px;
-        margin: 60px auto;
-        padding: 10px 20px 30px;
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .header-section {
+        margin-bottom: 30px;
     }
 
     .page-title {
-        text-align: center;
-        font-size: 30px;
-        font-weight: 700;
-        color: var(--primary-green);
-        margin-bottom: 35px;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--dark-navy);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
+
+    /* DEPARTMENT INFO BOX */
     .department-info {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 22px 26px;
-    margin-bottom: 35px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
-    border-left: 7px solid var(--primary-green);
-}
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 35px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        border-left: 6px solid var(--secondary); /* Blue accent for department info */
+    }
 
-.department-info h2 {
-    margin: 0 0 10px;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--primary-green);
-}
+    .department-info h2 {
+        margin: 0 0 10px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--secondary);
+    }
 
-.department-info p {
-    margin: 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--dark-green);
-}
+    .department-info p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--sidebar-text);
+    }
 
-
+    /* DOCTOR CARD DESIGN */
     .doctor-card {
-        background: #ffffff;
-        border-radius: 14px;
-        padding: 22px 26px;
-        margin-bottom: 22px;
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 18px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 8px 18px rgba(0,0,0,0.12);
-        border-left: 7px solid var(--primary-green);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
     .doctor-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+        border-color: var(--primary);
     }
 
-    .doctor-info h3 {
+    .doctor-profile {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .doc-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .doctor-details h3 {
         margin: 0;
-        font-size: 22px;
+        font-size: 1.15rem;
         font-weight: 700;
-        color: var(--primary-green);
+        color: var(--dark-navy);
     }
 
-    .doctor-info p {
-        margin: 6px 0 0;
-        font-size: 15px;
-        color: var(--dark-green);
+    .doctor-meta {
+        margin-top: 6px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
     }
 
+    .doctor-meta span {
+        font-size: 0.85rem;
+        color: var(--sidebar-text);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* ACTION BUTTON */
     .view-btn {
-        background: var(--primary-green);
+        background: var(--primary);
         color: #ffffff;
-        padding: 12px 22px;
+        padding: 10px 20px;
         border-radius: 10px;
         text-decoration: none;
-        font-size: 15px;
-        font-weight: 600;
-        white-space: nowrap;
-        transition: background 0.25s ease, transform 0.2s ease;
+        font-size: 0.85rem;
+        font-weight: 700;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .view-btn:hover {
-        background: #0b5c33;
-        transform: scale(1.05);
+        background: #0ea171;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
     }
 
     .no-data {
         text-align: center;
-        margin-top: 40px;
-        font-size: 18px;
+        padding: 50px;
+        background: var(--white);
+        border-radius: var(--radius);
+        border: 2px dashed var(--border);
+        color: var(--danger);
         font-weight: 600;
-        color: #c62828;
     }
 
     @media (max-width: 768px) {
         .doctor-card {
             flex-direction: column;
             align-items: flex-start;
-            gap: 15px;
+            gap: 20px;
         }
-
         .view-btn {
-            align-self: flex-end;
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>
 
 <div class="page-container">
 
-    <h1 class="page-title">
-        Doctors in {{ department.department_name }}
-    </h1>
+    <div class="header-section">
+        <h1 class="page-title">
+            <i class="fa-solid fa-stethoscope" style="color: var(--primary);"></i>
+            {{ department.department_name }} Specialists
+        </h1>
+    </div>
 
-    
-<!-- Department Description -->
-<div class="department-info">
-    <h2>About {{ department.department_name }}</h2>
-    <p>
-        {{ department.description if department.description else "Department description not available." }}
-    </p>
-</div>
-
+    <div class="department-info">
+        <h2>About the Department</h2>
+        <p>
+            {{ department.description if department.description else "Detailed information for this medical division is currently being updated." }}
+        </p>
+    </div>
 
     {% if doctors %}
         {% for doc in doctors %}
         <div class="doctor-card">
-
-            <div class="doctor-info">
-                <h3>{{ doc.username }}</h3>
-                <p>Email: {{ doc.email }}</p>
-                <p>Experience: {{ doc.experience if doc.experience else "Not Updated" }} years</p>
-                <p>Qualification: {{ doc.qualifications if doc.qualifications else "Not Updated" }}</p>
+            <div class="doctor-profile">
+                <div class="doc-icon">
+                    <i class="fa-solid fa-user-md"></i>
+                </div>
+                <div class="doctor-details">
+                    <h3> {{ doc.username }}</h3>
+                    <div class="doctor-meta">
+                        <span><i class="fa-solid fa-graduation-cap"></i> {{ doc.qualifications if doc.qualifications else "General Practitioner" }}</span>
+                        <span><i class="fa-solid fa-briefcase-medical"></i> {{ doc.experience if doc.experience else "0" }} Years Exp.</span>
+                    </div>
+                </div>
             </div>
 
-            <a href="{{ url_for('book_appointment', doctor_id=doc.id) }}"
-               class="view-btn">
-                Check Availability
+            <a href="{{ url_for('book_appointment', doctor_id=doc.id) }}" class="view-btn">
+                <i class="fa-solid fa-calendar-check"></i> Check Availability
             </a>
-
         </div>
         {% endfor %}
     {% else %}
         <div class="no-data">
-            No doctors found in this department
+            <i class="fa-solid fa-user-slash" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+            No medical practitioners found in this department.
         </div>
     {% endif %}
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{{ url_for('patient_dashboard') }}" style="color: var(--sidebar-text); text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+            <i class="fa-solid fa-arrow-left"></i> Return to Dashboard
+        </a>
+    </div>
 
 </div>
 

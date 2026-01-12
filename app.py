@@ -16,7 +16,7 @@ app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")   #thisnis for secere
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL is not set")
+    DATABASE_URL = "sqlite:///hms_db"
 
 # Fix for Render postgres:// issue
 if DATABASE_URL.startswith("postgres://"):
@@ -688,3 +688,8 @@ def init_db():
             db.session.commit()
 
     return "Database initialized successfully"
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)

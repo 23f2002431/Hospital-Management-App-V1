@@ -1,137 +1,180 @@
 {% extends "base.html" %}
 
-{% block title %}Login | MedCore{% endblock %}
+{% block title %}Login | MedCore Pro{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
+    :root {
+        --primary: #0f7e59; 
+        --primary-light: #ecfdf5;
+        --secondary: #0ea5e9; 
+        --dark-navy: #1e293b;
+        --sidebar-text: #64748b;
+        --bg-body: #f8fafc;
+        --white: #ffffff;
+        --border: #e2e8f0;
+        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius: 16px;
+        --error-red: #ef4444;
+    }
+
     /* REMOVE BASE PADDING FOR AUTH PAGES */
     .main-container {
-       
         padding: 0 !important;
-        min-height: calc(100vh - 140px);
-        background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
-        padding: 0 !important;
+        background-color: var(--bg-body);
     }
 
-    :root {
-        --primary-blue: #0a2540;
-        --primary-green: #0d6d3d;
-        --border-color: #dce5ec;
-        --error-red: #c62828;
+    body { 
+        font-family: 'Inter', sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-body);
+        color: var(--dark-navy);
     }
 
-    /* FULL SCREEN WRAPPER */
+    /* CENTERED CONTAINER */
     .auth-wrapper {
-        min-height: calc(100vh - 140px);;
-        width: 100%;
+        min-height: calc(100vh - 100px);
         display: flex;
         align-items: center;
         justify-content: center;
-        /* background: linear-gradient(135deg, #e3f2fd, #e8f5e9); */
+        padding: 40px 20px;
     }
 
-    /* CARD */
+    /* CARD DESIGN */
     .auth-card {
-        background: #ffffff;
+        background: var(--white);
         width: 100%;
         max-width: 420px;
-        border-radius: 12px;
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
         overflow: hidden;
+        position: relative;
+    }
+
+    /* Top Accent Line */
+    .auth-card::before {
+        content: ""; 
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 5px; 
+        background: var(--primary);
     }
 
     /* HEADER */
     .auth-header {
-        background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
-        color: white;
+        padding: 40px 32px 10px 32px;
         text-align: center;
-        padding: 24px;
     }
 
     .auth-header h2 {
         margin: 0;
-        font-size: 24px;
-        font-weight: 600;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--dark-navy);
     }
 
     .auth-header p {
-        margin-top: 6px;
-        font-size: 14px;
-        opacity: 0.9;
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: var(--sidebar-text);
     }
 
     /* BODY */
     .auth-body {
-        padding: 28px 24px;
+        padding: 20px 32px 40px 32px;
     }
 
     .form-group {
-        margin-bottom: 16px;
+        margin-bottom: 20px;
     }
 
     .form-group label {
         display: block;
-        margin-bottom: 6px;
-        font-size: 14px;
-        color: var(--primary-blue);
-        font-weight: 500;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark-navy);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .form-group input {
         width: 100%;
-        padding: 11px;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        font-size: 15px;
-        outline: none;
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        font-size: 0.95rem;
+        background: #fdfdfd;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
     }
 
     .form-group input:focus {
-        border-color: var(--primary-green);
-        box-shadow: 0 0 0 2px rgba(13, 109, 61, 0.15);
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        background: #fff;
     }
 
     /* ERROR MESSAGE */
     .error-message {
-        background: #fdecea;
+        background: #fee2e2;
         color: var(--error-red);
         border-left: 4px solid var(--error-red);
-        padding: 10px 12px;
-        margin-bottom: 15px;
-        font-size: 14px;
-        border-radius: 4px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     /* BUTTON */
     .auth-btn {
         width: 100%;
-        padding: 12px;
-        background: var(--primary-green);
+        padding: 14px;
+        background: var(--primary);
         color: white;
         border: none;
-        border-radius: 6px;
-        font-size: 16px;
-        font-weight: 600;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 700;
         cursor: pointer;
         margin-top: 10px;
+        transition: all 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
     }
 
     .auth-btn:hover {
-        background: #0b5c33;
+        background: #0ea171;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
     }
 
-    /* FOOTER TEXT */
+    /* FOOTER */
     .auth-footer {
-        margin-top: 16px;
+        margin-top: 24px;
         text-align: center;
-        font-size: 14px;
+        font-size: 0.9rem;
+        color: var(--sidebar-text);
     }
 
     .auth-footer a {
-        color: var(--primary-green);
-        font-weight: 600;
+        color: var(--primary);
+        font-weight: 700;
         text-decoration: none;
+        transition: color 0.2s;
     }
 
     .auth-footer a:hover {
@@ -143,14 +186,16 @@
     <div class="auth-card">
 
         <div class="auth-header">
+            <i class="fa-solid fa-circle-user" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
             <h2>Welcome Back</h2>
-            <p>Login to MedCore HMS</p>
+            <p>Access the MedCore HMS Portal</p>
         </div>
 
         <div class="auth-body">
 
             {% if error_message %}
                 <div class="error-message">
+                    <i class="fa-solid fa-circle-exclamation"></i>
                     {{ error_message }}
                 </div>
             {% endif %}
@@ -169,7 +214,9 @@
                            placeholder="Enter your password" required>
                 </div>
 
-                <button type="submit" class="auth-btn">Login</button>
+                <button type="submit" class="auth-btn">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                </button>
 
                 <div class="auth-footer">
                     Don’t have an account?
