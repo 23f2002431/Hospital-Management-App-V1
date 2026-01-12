@@ -12,9 +12,13 @@ A web-based Hospital Management System to manage patients, doctors, appointments
 - Doctor availability management
 - Treatment assignment
 - Search functionality for doctors, patients, and departments
+- 
+## Demo
+Live Project Link: https://hospital-management-app-v1.onrender.com
 
-## Technology Stack
-- Flask (Backend)
-- SQLAlchemy (ORM)
-- PostgreSQL (Database)
+## Technologies
+- Python, Flask, SQLAlchemy
+- HTML, CSS
+- PostgreSQL
+- Render Deployment
 
